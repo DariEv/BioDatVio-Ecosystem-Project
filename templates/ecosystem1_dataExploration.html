@@ -1,10 +1,47 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
 <html>
+	<head>
+		<script src="http://d3js.org/d3.v4.min.js" charset="utf-8">
+		</script>
+		<style>
+      		rect.bordered {
+        	stroke: #E6E6E6;
+        	stroke-width:2px;   
+      		}
+
+      		text {
+        		font-size: 9pt;
+        		font-family: Consolas, courier;
+        		fill: #aaa;
+      		}
+
+      		text.axis-workweek {
+        		fill: #000;
+      		}
+
+      		text.axis-worktime {
+        		fill: #000;
+      		}
+    	</style>
+	</head>
 	<body>
-		<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+		<div id="chart">
+		</div>
+    	<div id="dataset-picker">
+    	</div>
+
+		<script src="{{ url_for('static', filename='ecosystem1_heatmap.js') }}" type="text/javascript">
+		</script>
 		<script>
 			var dataset = {{ data | safe }};
-			console.log('Testpage is running.');
+			console.log('Data exploration is running.');
 			console.log(dataset);
+
+			window.onload = function() {
+				myPlot = heatmapChart();
+				myPlot.init(dataset['dataExploration']);
+			}
 		</script>
 	</body>
 </html>

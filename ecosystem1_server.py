@@ -31,7 +31,6 @@ def makeEcosystemDataset():
 def index():
     return redirect(url_for('dataExploration'))
 
-
 @app.route('/dataExploration')
 #renders dataExploration subwebpage
 def dataExploration():
