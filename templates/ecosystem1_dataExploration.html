@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<html>
-	<head>
+{% extends "base.html" %}
+{% block content %}
+
 		<script src="http://d3js.org/d3.v4.min.js" charset="utf-8">
 		</script>
 		<style>
@@ -24,8 +23,7 @@
         		fill: #000;
       		}
     	</style>
-	</head>
-	<body>
+
 		<div id="chart">
 		</div>
     	<div id="dataset-picker">
@@ -43,5 +41,5 @@
 				myPlot.init(dataset['dataExploration']);
 			}
 		</script>
-	</body>
-</html>
+		
+{% endblock %}
