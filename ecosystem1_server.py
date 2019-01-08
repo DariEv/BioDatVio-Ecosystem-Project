@@ -13,13 +13,6 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'some_really_long_random_string_here'
 
-#creates a random data set for the bar chart in the barChart subwebpage
-#def createRandomIntList(min, max, r):
-#    randomList=[]
-#    for i in range(r):
-#      randomList.append(random.randint(min, max))
-#    return randomList
-
 #reads in tsv files and returns a dictionary for the subwebpages
 def makeEcosystemDataset():
     data={}
@@ -40,13 +33,13 @@ def index():
 
 
 @app.route('/dataExploration')
-#renders bubbleChart subwebpage
+#renders dataExploration subwebpage
 def dataExploration():
     return render_template('ecosystem1_dataExploration.html', 
         data=json.dumps(makeEcosystemDataset()))
 
 @app.route('/metadataOverview')
-#renders barChart subwebpage
+#renders metadataOverview subwebpage
 def metadataOverview(): 
     return render_template('ecosystem1_metadataOverview.html', 
         data=json.dumps(makeEcosystemDataset()))
