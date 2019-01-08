@@ -1,4 +1,4 @@
-#Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel  
+#Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel
 
 #!flask/bin/python
 from flask import Flask, render_template, request, redirect, url_for, abort, session
@@ -8,6 +8,9 @@ import json
 import random
 import math
 import csv
+
+from collections import Counter
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -34,14 +37,25 @@ def index():
 @app.route('/dataExploration')
 #renders dataExploration subwebpage
 def dataExploration():
-    return render_template('ecosystem1_dataExploration.html', 
+    return render_template('ecosystem1_dataExploration.html',
         data=json.dumps(makeEcosystemDataset()))
 
 @app.route('/metadataOverview')
 #renders metadataOverview subwebpage
-def metadataOverview(): 
-    return render_template('ecosystem1_metadataOverview.html', 
-        data=json.dumps(makeEcosystemDataset()))
+def metadataOverview():
+    data = makeEcosystemDataset()["metadataOverview"]
+
+    # Getting values for BMI group
+    counter = Counter()
+    for entry in data:
+        counter[entry.get("BMI_group")] += 1
+
+    categories = list(counter.keys())
+    values = list(counter.values())
+
+    return render_template(
+        "ecosystem1_metadataOverview.html",
+        categories=categories, values=values)
 
 
 if __name__ == '__main__':

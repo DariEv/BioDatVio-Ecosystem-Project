@@ -1,11 +1,22 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-		<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-		<script>
-			var dataset = {{ data | safe }};
-			console.log('Metadata overwiew is running.');
-			console.log(dataset);
-		</script>
+	<script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+	<script src="{{ url_for('static', filename='ecosystem1_metadata.js') }}" type="text/javascript"></script>
+	<script>
+		$(document).ready(function() {
+			let categories = {{ categories | safe }};
+			let values = {{ values | safe }};
+
+			let chart = new PieChart();
+			chart.selectionElement = d3.select(".chart");
+			chart.setCategories = categories;
+			chart.setValues = values;
+			chart.show();
+		});
+	</script>
+
+	<div class="chart"></div>
 
 {% endblock %}
