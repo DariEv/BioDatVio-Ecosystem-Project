@@ -1,4 +1,4 @@
-#Project ecosystem 1 by Constantin Holzapfel, Daria, Eduardo, Nicolas Brich, Sarah 
+#Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel  
 
 #!flask/bin/python
 from flask import Flask, render_template, request, redirect, url_for, abort, session
