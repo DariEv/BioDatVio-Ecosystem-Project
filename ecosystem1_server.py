@@ -43,20 +43,8 @@ def dataExploration():
 @app.route('/metadataOverview')
 #renders metadataOverview subwebpage
 def metadataOverview():
-    data = makeEcosystemDataset()["metadataOverview"]
-
-    # Getting values for BMI group
-    counter = Counter()
-    for entry in data:
-        counter[entry.get("BMI_group")] += 1
-
-    categories = list(counter.keys())
-    values = list(counter.values())
-
-    return render_template(
-        "ecosystem1_metadataOverview.html",
-        categories=categories, values=values)
-
+    return render_template("ecosystem1_metadataOverview.html",
+                           data=json.dumps(makeEcosystemDataset()))
 
 if __name__ == '__main__':
     app.run(debug=True)

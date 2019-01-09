@@ -4,19 +4,48 @@
 
 	<script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
 	<script src="{{ url_for('static', filename='ecosystem1_metadata.js') }}" type="text/javascript"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='ecosystem1_metadata.css') }}">
 	<script>
 		$(document).ready(function() {
-			let categories = {{ categories | safe }};
-			let values = {{ values | safe }};
+			let dataset = {{ data | safe }}["metadataOverview"];
+			let chartsWidth = 350;
+			let chartsHeight = 350;
 
-			let chart = new PieChart();
-			chart.selectionElement = d3.select(".chart");
-			chart.setCategories = categories;
-			chart.setValues = values;
-			chart.show();
+			// Arrange metadata values
+			let columns = groupByColumn(dataset);
+			let sexColumn = columns["Sex"].values;
+			let BMIColumn = columns["BMI_group"].values;
+
+			// Sex pie chart
+			let sexChart = new PieChart();
+			sexChart.selectionElement = d3.select(".sex").datum(sexColumn);
+			sexChart.chartWidth = chartsWidth;
+			sexChart.chartHeight = chartsHeight;
+			sexChart.show();
+
+			// BMI group pie chart
+			let BMIChart = new PieChart();
+			BMIChart.selectionElement = d3.select(".bmi").datum(BMIColumn);
+			BMIChart.chartWidth = chartsWidth;
+			BMIChart.chartHeight = chartsHeight;
+			BMIChart.show();
 		});
 	</script>
 
-	<div class="chart"></div>
+	<div class="row metadata">
+		<div class="col-md-6">
+			<div class="age histogram"></div>
+		</div>
+		<div class="col-md-6">
+			<div class="sex pie-chart"></div>
+		</div>
+		<div class="col-md-6">
+			<div class="nationality histogram"></div>
+		</div>
+		<div class="col-md-6">
+			<div class="bmi pie-chart"></div>
+		</div>
+	</div>
+
 
 {% endblock %}
