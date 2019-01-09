@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 
+<script src="{{ url_for('static', filename='ecosystem1_filter.js') }}" type="text/javascript"></script>
+
 		<script src="http://d3js.org/d3.v4.min.js" charset="utf-8">
 		</script>
 		<style>
@@ -40,6 +42,18 @@
 				myPlot = heatmapChart();
 				myPlot.init(dataset['dataExploration']);
 			}
+			/* EXAMPLE CODE FOR FILTERED VALUES - For testing only
+			window.onload = function() {
+				var filter = filter_object(dataset);
+				var test_filter = filter.generic_filter("Sex","male")
+				console.log(test_filter)
+				var filtered_data = filter.filter_data(test_filter)
+				console.log(filtered_data)
+				myPlot = heatmapChart();
+				myPlot.init(filtered_data);
+			}
+			*/
+
 		</script>
-		
+
 {% endblock %}
