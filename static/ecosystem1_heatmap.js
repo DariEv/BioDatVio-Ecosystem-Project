@@ -17,9 +17,9 @@ function heatmapChart() {
 			
 			
 			var margin = { top: 250, right: 0, bottom: 100, left: 50 },
-			width = 10000 - margin.left - margin.right,
-			height = 10000 - margin.top - margin.bottom,
-			gridSize = Math.floor(width / (samples.length)),
+			width = 2000 - margin.left - margin.right,
+			height = 13*samples.length - margin.top - margin.bottom,
+			gridSize = Math.floor(height / (samples.length)),
 			legendElementWidth = gridSize*2,
 			buckets = 9,
 			colors = ["#ffffcc", "#c7e9b4", "#7fcdbb", "#41b6c4", "#2c7fb8", "#253494"]; //by colorbrewer: YlGnBu[6]
