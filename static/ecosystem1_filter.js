@@ -1,18 +1,20 @@
 function filter_wrapper(filter_obj){
-  var age_from_val = document.getElementById("AGEFROM").value;
-  var age_to_val = document.getElementById("AGETO").value;
+  //var age_from_val = document.getElementById("AGEFROM").value;
+  //var age_to_val = document.getElementById("AGETO").value;
   var sex_val = document.getElementById("btn_sex").value;
   var nationality_val = document.getElementById("btn_nationality").value;
   var bmi_val = document.getElementById("btn_bmi").value;
 
-  var age_filter = filter.generic_filter("Age",[age_from_val,age_to_val])
-  var sex_filter = filter.generic_filter("Sex",sex_val)
-  var nationality_filter = filter.generic_filter("Nationality",nationality_val)
-  var bmi_filter = filter.generic_filter("BMI_group",bmi_val)
+  //var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
+  var sex_filter = filter_obj.generic_filter("Sex",sex_val)
+  var nationality_filter = filter_obj.generic_filter("Nationality",nationality_val)
+  var bmi_filter = filter_obj.generic_filter("BMI_group",bmi_val)
+  console.log(sex_filter)
+  console.log(nationality_filter)
+  console.log(bmi_filter)
+  test_filter = filter_obj.intersection([sex_filter,nationality_filter,bmi_filter]) //age_filter,
 
-  test_filter = filter.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
-
-  var filtered_data = filter.filter_data(test_filter)
+  var filtered_data = filter_obj.filter_data(test_filter)
   return filtered_data
 }
 

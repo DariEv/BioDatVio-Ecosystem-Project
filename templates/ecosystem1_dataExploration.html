@@ -30,26 +30,22 @@
 			var dataset = {{ data | safe }};
 			console.log('Data exploration is running.');
 			console.log(dataset);
-
+			/*
 			window.onload = function() {
 				myPlot = heatmapChart();
 				myPlot.init(dataset['dataExploration']);
 			}
-
-			/*EXAMPLE CODE FOR FILTERED VALUES - For testing only
+			*/
+			//EXAMPLE CODE FOR FILTERED VALUES - For testing only
 			window.onload = function() {
 				var filter = filter_object(dataset);
-				var test_filter1 = filter.generic_filter("Sex","male")
-				var test_filter2 = filter.generic_filter("BMI_group","obese")
-				console.log(test_filter1)
-				console.log(test_filter2)
-				test_filter = filter.intersection([test_filter1,test_filter2])
-				console.log(test_filter)
-				var filtered_data = filter.filter_data(test_filter)
+
+				var filtered_data = filter_wrapper(filter)
+
 				console.log(filtered_data)
 				myPlot = heatmapChart();
 				myPlot.init(filtered_data);
-			}*/
+			}
 
 
 		</script>
