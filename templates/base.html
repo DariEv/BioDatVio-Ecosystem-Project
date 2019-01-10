@@ -42,48 +42,53 @@
                       <div class="row">
                         <div class="form-group col-xs-1">
                         <label>From</label>
-                        <input type="number" class="form-control">
-                       </div>
+                        <input type="range" class="form-control" min="0" size="100px">
+                        </div>
+                      </div>
+                      <div class="row">
                         <div class="form-group col-xs-1">
                         <label>To</label>
-                        <input type="number" class="form-control">
-                       </div>
-                  </div> 
+                        <input type="range" class="form-control">
+                        </div> 
+                      </div>
                  </div> 
                 <div class="form-group">
                 <label>Sex:</label>
                   <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Sex
+                    <button class="btn btn-default dropdown-toggle" type="button" id="btn_sex" data-toggle="dropdown">Sex
                     <span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">male</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">female</a></li>
-                     <li role="presentation"><a role="menuitem" tabindex="-1" href="#">NA</a></li>
+                    <ul id="SEX" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="all">all</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="male">male</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="female">female</a></li>
+                     <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="NA">NA</a></li>
                     </ul>
                   </div>
                 </div>
                 <div class="form-group"> 
                 <label>Nationality:</label>
                   <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Nationality
+                    <button class="btn btn-default dropdown-toggle" type="button" id="btn_nationality" data-toggle="dropdown" value="all">Nationality
                     <span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">US</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">CentralEurope</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">SouthEurope</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Scandinavia</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">UKIE</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">EasternEurope</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">NA</a></li>
+                    <ul id="NATIONALITY" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="all">all</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="US">US</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="CentralEurope">CentralEurope</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="SouthEurope">SouthEurope</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="Scandinavia">Scandinavia</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="UKIE">UKIE</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="EasternEurope">EasternEurope</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="NA">NA</a></li>
                     </ul>
                   </div>
                 </div>
                 <div class="form-group">  
                   <label>BMI:</label>
                   <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">BMI
+                    <button class="btn btn-default dropdown-toggle" type="button" id="btn_bmi" data-toggle="dropdown" value="all">BMI
                     <span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                    <ul id="BMI" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="all">all</a></li>
                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="severeobese">severeobese</a></li>
                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="obese">obese</a></li>
                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="lean">lean</a></li>
