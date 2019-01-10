@@ -30,14 +30,15 @@
 			var dataset = {{ data | safe }};
 			console.log('Data exploration is running.');
 			console.log(dataset);
-			/*
+			
 			window.onload = function() {
 				myPlot = heatmapChart();
 				myPlot.init(dataset['dataExploration']);
-			}
-			*/
+				document.querySelector('#BMI').addEventListener('click', function(){myPlot.update(dataset['dataExploration']);
+			});};
+			
 			//EXAMPLE CODE FOR FILTERED VALUES - For testing only
-			window.onload = function() {
+			/* window.onload = function() {
 				var filter = filter_object(dataset);
 
 				var filtered_data = filter_wrapper(filter)
@@ -46,6 +47,7 @@
 				myPlot = heatmapChart();
 				myPlot.init(filtered_data);
 			}
+			*/
 
 
 		</script>

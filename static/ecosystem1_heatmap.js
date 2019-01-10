@@ -1,7 +1,17 @@
+//constants
+var cards=NaN;
+var taxa=NaN;
+var margin=NaN;
+var width=NaN;
+var height=NaN;
+var gridSize=NaN;
+var legendElementWidth=NaN;
+var colors=NaN;
+
 function heatmapChart() {
 	returnDictionary = {};
 	returnDictionary["init"] = function(data){
-		var taxa = Object.keys(data[0]); 
+			taxa = Object.keys(data[0]); 
 			taxa.shift();
 			console.log(data[0]);
 			console.log(taxa);
@@ -15,8 +25,8 @@ function heatmapChart() {
 			var max_of_array = Math.max.apply(Math, data);
 			console.log('max', max_of_array);
 			
-			
-			var margin = { top: 250, right: 0, bottom: 100, left: 50 },
+			//Here were the constants
+			margin = { top: 250, right: 0, bottom: 100, left: 50 },
 			width = 2000 - margin.left - margin.right,
 			height = 13*samples.length - margin.top - margin.bottom,
 			gridSize = Math.floor(height / (samples.length)),
@@ -53,7 +63,7 @@ function heatmapChart() {
               .range(colors);
 			*/
 
-			var cards = svg.selectAll(".sample")
+			cards = svg.selectAll(".sample")
 				.data(data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
 
 			cards.append("title");
@@ -73,6 +83,23 @@ function heatmapChart() {
 			
 	}
 
-	//returnDictionary['update']=function(filtered_data){};
+	returnDictionary['update']=function(filtered_data){
+			cards.data(filtered_data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
+
+			cards.append("title");
+			
+			taxa.forEach(function(item, taxon) {
+				cards.enter().append("rect")
+				  //.attr("x", function(d, i) { return (i) * gridSize; })
+				  //.attr("y", function(d, i) { return (taxon) * gridSize; })
+				  .attr("x", function(d, i) { return (taxon) * gridSize; })
+				  .attr("y", function(d, i) { return (i) * gridSize; })
+				  .attr("class", "hour bordered")
+				  .attr("width", gridSize)
+				  .attr("height", gridSize)
+				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item]))); 		
+												return colors[c];});
+			});
+	};
     return returnDictionary;  
 };
