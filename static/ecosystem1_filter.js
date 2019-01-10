@@ -68,6 +68,15 @@ function filter_object(data){
       }
     return filtered_samples
     }
+  returnDictionary["intersection"] = function(id_array){
+    var internal_array = id_array
+    while(id_array.length > 1){
+      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(value => -1 !== internal_array[internal_array.length-2].indexOf(value));
+      internal_array.pop()
+    }
+    return internal_array[0]
+
+  }
 
   returnDictionary["filter_data"] = function(sample_ids){
     var sample_ids = sample_ids;
