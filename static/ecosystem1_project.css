@@ -1,0 +1,12 @@
+/* Pie Chart */
+.pie-chart {
+    margin-bottom: 2em;
+}
+
+.pie-chart .label {
+    font-size: 85%;
+}
+
+.pie-chart .values {
+    font-weight: bold;
+}
