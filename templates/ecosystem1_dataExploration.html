@@ -28,13 +28,16 @@
 		</script>
 		<script>
 			var dataset = {{ data | safe }};
+			var filter = filter_object(dataset);
 			console.log('Data exploration is running.');
 			console.log(dataset);
 			
 			window.onload = function() {
 				myPlot = heatmapChart();
 				myPlot.init(dataset['dataExploration']);
-				document.querySelector('#BMI').addEventListener('click', function(){myPlot.update(dataset['dataExploration']);
+				document.querySelector('#BMI').addEventListener('click', function(){
+					console.log(filter_wrapper(filter))
+					myPlot.update(filter_wrapper(filter));
 			});};
 			
 			//EXAMPLE CODE FOR FILTERED VALUES - For testing only

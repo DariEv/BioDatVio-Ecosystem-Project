@@ -1,4 +1,5 @@
 //constants
+var svg=NaN;
 var cards=NaN;
 var taxa=NaN;
 var margin=NaN;
@@ -34,7 +35,7 @@ function heatmapChart() {
 			buckets = 9,
 			colors = ["#ffffcc", "#c7e9b4", "#7fcdbb", "#41b6c4", "#2c7fb8", "#253494"]; //by colorbrewer: YlGnBu[6]
 
-			var svg = d3.select("#chart").append("svg")
+			svg = d3.select("#chart").append("svg")
 			  .attr("width", width + margin.left + margin.right)
 			  .attr("height", height + margin.top + margin.bottom)
 			  .append("g")
@@ -74,32 +75,34 @@ function heatmapChart() {
 				  //.attr("y", function(d, i) { return (taxon) * gridSize; })
 				  .attr("x", function(d, i) { return (taxon) * gridSize; })
 				  .attr("y", function(d, i) { return (i) * gridSize; })
-				  .attr("class", "hour bordered")
+				  .attr("class", "bordered")
 				  .attr("width", gridSize)
 				  .attr("height", gridSize)
 				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item]))); 		
 												return colors[c];});
 			});
+			console.log('printed heatmap.');
 			
 	}
 
 	returnDictionary['update']=function(filtered_data){
-			cards.data(filtered_data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
+			d3.selectAll(".bordered").remove();
 
-			cards.append("title");
-			
+			console.log(filtered_data);
+			cards=svg.selectAll(".sample").data(filtered_data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
 			taxa.forEach(function(item, taxon) {
+
 				cards.enter().append("rect")
 				  //.attr("x", function(d, i) { return (i) * gridSize; })
 				  //.attr("y", function(d, i) { return (taxon) * gridSize; })
 				  .attr("x", function(d, i) { return (taxon) * gridSize; })
 				  .attr("y", function(d, i) { return (i) * gridSize; })
-				  .attr("class", "hour bordered")
+				  .attr("class", "bordered")
 				  .attr("width", gridSize)
 				  .attr("height", gridSize)
 				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item]))); 		
 												return colors[c];});
-			});
+			}); 
 	};
-    return returnDictionary;  
+    return returnDictionary; 
 };
