@@ -32,7 +32,7 @@ def makeEcosystemDataset():
 
 @app.route('/')
 def index():
-    return redirect(url_for('metadataOverview'))
+    return redirect(url_for('project'))
 
 @app.route('/dataExploration')
 #renders dataExploration subwebpage
@@ -45,6 +45,10 @@ def dataExploration():
 def metadataOverview():
     return render_template("ecosystem1_metadataOverview.html",
                            data=json.dumps(makeEcosystemDataset()))
+@app.route('/project')
+#renders metadataOverview subwebpage
+def project():
+    return render_template("ecosystem1_project.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
