@@ -1,6 +1,7 @@
 //constants
 var svg=NaN;
 var cards=NaN;
+var samplesLabel=NaN;
 var taxa=NaN;
 var margin=NaN;
 var width=NaN;
@@ -14,10 +15,12 @@ function heatmapChart() {
 	returnDictionary["init"] = function(data){
 			taxa = Object.keys(data[0]); 
 			taxa.shift();
+			console.log(data);
 			console.log(data[0]);
 			console.log(taxa);
 			console.log("length", taxa.length);
 			
+			/*
 			var samples = new Array(data.length); // create an empty array
 			for(var i = 0; i < samples.length; i++){
 				samples[i] = + i;
@@ -25,12 +28,13 @@ function heatmapChart() {
 			console.log(samples);
 			var max_of_array = Math.max.apply(Math, data);
 			console.log('max', max_of_array);
+			*/
 			
 			//Here were the constants
-			margin = { top: 250, right: 0, bottom: 100, left: 50 },
+			margin = { top: 250, right: 0, bottom: 100, left: 100 },
 			width = 2000 - margin.left - margin.right,
-			height = 13*samples.length - margin.top - margin.bottom,
-			gridSize = Math.floor(height / (samples.length)),
+			height = 13*data.length - margin.top - margin.bottom,
+			gridSize = Math.floor(height / (data.length)),
 			legendElementWidth = gridSize*2,
 			buckets = 9,
 			colors = ["#ffffcc", "#c7e9b4", "#7fcdbb", "#41b6c4", "#2c7fb8", "#253494"]; //by colorbrewer: YlGnBu[6]
@@ -41,7 +45,8 @@ function heatmapChart() {
 			  .append("g")
 			  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");			  			  
 			  
-			var samplesLabel = svg.selectAll(".samplesLabel")
+			/*
+			samplesLabel = svg.selectAll(".samplesLabel")
 			  .data(samples)
 			  .enter().append("text")
 				.text(function (d) { return d; })
@@ -49,6 +54,7 @@ function heatmapChart() {
 				.attr("y", function (d, i) { return i * gridSize; })
 				.style("text-anchor", "end")
 				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
+			*/
 
 			var taxaLabels = svg.selectAll(".taxaLabels")
 				  .data(taxa)
@@ -68,6 +74,14 @@ function heatmapChart() {
 				.data(data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
 
 			cards.append("title");
+
+			cards.enter().append("text")
+				.text(function (d) { return d[""]; })
+				.attr("class", "samplesLabel")
+				.attr("x", 0)
+				.attr("y", function (d, i) { return i * gridSize; })
+				.style("text-anchor", "end")
+				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
 			
 			taxa.forEach(function(item, taxon) {
 				cards.enter().append("rect")
@@ -87,9 +101,19 @@ function heatmapChart() {
 
 	returnDictionary['update']=function(filtered_data){
 			d3.selectAll(".bordered").remove();
+			d3.selectAll(".samplesLabel").remove();
 
 			console.log(filtered_data);
 			cards=svg.selectAll(".sample").data(filtered_data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
+			
+			cards.enter().append("text")
+				.text(function (d) { return d[""]; })
+				.attr("class", "samplesLabel")
+				.attr("x", 0)
+				.attr("y", function (d, i) { return i * gridSize; })
+				.style("text-anchor", "end")
+				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
+
 			taxa.forEach(function(item, taxon) {
 
 				cards.enter().append("rect")
