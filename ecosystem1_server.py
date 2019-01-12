@@ -8,7 +8,9 @@ import json
 import random
 import math
 import csv
+import pandas as pd
 
+from sklearn.decomposition import PCA
 from collections import Counter
 
 
@@ -30,6 +32,22 @@ def makeEcosystemDataset():
 
     return data
 
+#reads tsv files and calculates the PCoA matrix from it
+def calculatePCoAFromData():
+	df = pd.read_csv("ecosystem_HITChiptsv.sec", sep="\t")
+	
+	# pcoa
+	pca6 = PCA(n_components=6)
+	XPCAreduced6 = pca6.fit_transform(df.drop(['Unnamed: 0'], axis=1))
+	
+	# genrate output dataframe
+	col_names = ["p1","p2","p3","p4","p5","p6"]
+	row_names = ["Sample-"+str(i+1) for i in range(len(XPCAreduced6))]
+	out = pd.DataFrame(XPCAreduced6, index=row_names, columns=col_names).transpose()
+	
+	return out.to_dict()
+	
+
 @app.route('/')
 def index():
     return redirect(url_for('project'))
@@ -39,6 +57,12 @@ def index():
 def dataExploration():
     return render_template('ecosystem1_dataExploration.html',
         data=json.dumps(makeEcosystemDataset()))
+		
+@app.route('/PCoA')
+#renders PCoA subwebpage
+def PCoA():
+    return render_template('ecosystem1_PCoA.html',
+        data=json.dumps(calculatePCoAFromData()))
 
 @app.route('/metadataOverview')
 #renders metadataOverview subwebpage

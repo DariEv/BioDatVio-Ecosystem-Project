@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="{{ url_for('static', filename='ecosystem1_filter.js') }}" type="text/javascript"></script>
+
+		<script src="http://d3js.org/d3.v4.min.js" charset="utf-8">
+		</script>
+
+		<div id="chart"> "Console printing"
+		</div>
+    	<div id="dataset-picker">
+    	</div>
+
+		<script src="{{ url_for('static', filename='ecosystem1_pcoa.js') }}" type="text/javascript">
+		</script>
+		<script>
+			var dataset = {{ data | safe }};
+			//var filter = filter_object(dataset);
+			console.log("html", dataset);
+			
+			window.onload = function() {
+				myPlot = plotPCoA();
+				myPlot.init(dataset);
+				/*document.querySelector('#BMI').addEventListener('click', function(){
+					console.log(filter_wrapper(filter))
+					myPlot.update(filter_wrapper(filter));
+				});*/
+			};
+
+
+		</script>
+
+{% endblock %}
