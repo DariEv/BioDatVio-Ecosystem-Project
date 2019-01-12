@@ -43,7 +43,8 @@ def calculatePCoAFromData():
 	# genrate output dataframe
 	col_names = ["p1","p2","p3","p4","p5","p6"]
 	row_names = ["Sample-"+str(i+1) for i in range(len(XPCAreduced6))]
-	out = pd.DataFrame(XPCAreduced6, index=row_names, columns=col_names).transpose()
+	#out = pd.DataFrame(XPCAreduced6, index=row_names, columns=col_names).transpose()
+	out = pd.DataFrame(XPCAreduced6, columns=col_names).transpose()
 	
 	return out.to_dict()
 	
