@@ -172,6 +172,10 @@ class BarChart extends Chart {
 		this.yLabel = label;
 	}
 
+	set sortData(sort) {
+		this.mustSort = sort;
+	}
+
 	show() {
 		this.calculateCounts();
 		this.calculateAxisBoundaries();
@@ -189,17 +193,20 @@ class BarChart extends Chart {
 		// Get sorted counts
 		let counts = counter(this.data);
 		let entries = Object.entries(counts);
-		let sorted = entries.sort((a, b) => b[1] - a[1]);
 
-		let sorted_keys = [];
-		let sorted_values = [];
-		sorted.forEach(element => {
-			sorted_keys.push(element[0]);
-			sorted_values.push(element[1]);
+		if (this.mustSort) {
+			entries = entries.sort((a, b) => b[1] - a[1]);
+		}
+
+		let keys = [];
+		let values = [];
+		entries.forEach(element => {
+			keys.push(element[0]);
+			values.push(element[1]);
 		});
 
-		this.xLabels = sorted_keys;
-		this.data = sorted_values;
+		this.xLabels = keys;
+		this.data = values;
 	}
 
 	calculateAxisBoundaries() {
