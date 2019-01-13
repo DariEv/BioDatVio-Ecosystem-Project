@@ -162,6 +162,7 @@ class BarChart extends Chart {
 		super(width, height);
 
 		this.axisSeparation = 10;
+		this.mustRotateLabels = false;
 	}
 
 	set xAxisLabel(label) {
@@ -174,6 +175,10 @@ class BarChart extends Chart {
 
 	set sortData(sort) {
 		this.mustSort = sort;
+	}
+
+	set rotateLabels(rotate) {
+		this.mustRotateLabels = rotate;
 	}
 
 	show() {
@@ -238,6 +243,23 @@ class BarChart extends Chart {
 				.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); });
 	}
 
+	getLabelsToDisplay() {
+		let values = [];
+
+		this.xLabels.forEach((element) => {
+			// If label is a number, don't show all of them
+			let add_value = (
+				!$.isNumeric(element) ||
+				($.isNumeric(element) && parseFloat(element) % 5 === 0)
+			);
+
+			if (add_value)
+				values.push(element);
+		});
+
+		return values;
+	}
+
 	createAxes() {
 		// Setting up X axis
 		this.xScale = d3.scaleBand()
@@ -245,14 +267,21 @@ class BarChart extends Chart {
 			.range([0, this.width])
 			.paddingInner(0.05);
 
-		let xAxis = d3.axisBottom(this.xScale);
-		this.svg.append("g")
+		let xAxis = d3.axisBottom(this.xScale)
+			.tickValues(this.getLabelsToDisplay());
+
+		let axis = this.svg.append("g")
 			.attr("class", "x-axis")
 			.attr("transform", "translate(0, " + (this.height + this.axisSeparation) + ")")
 			.call(xAxis)
-				.selectAll("text")
+
+		// Add attributes for label rotation
+		if (this.mustRotateLabels) {
+			axis.selectAll("text")
 				.attr("dx", "-0.8em")
-				.attr("dy", "0.15em");
+				.attr("dy", "0.15em")
+				.attr("class", "rotate");
+		}
 
 		// Adding X axis label
 		this.svg.append("text")

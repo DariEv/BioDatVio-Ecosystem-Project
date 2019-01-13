@@ -24,10 +24,6 @@
 
 /* Chart */
 
-.chart {
-	/* padding: 1.5rem 2rem; */
-}
-
 .chart .label {
 	font-weight: normal;
 }
@@ -36,7 +32,7 @@
 	fill: #333;
 }
 
-.chart .x-axis text {
+.chart .x-axis text.rotate {
 	text-anchor: end;
 	transform: rotate(-45deg);
 }
