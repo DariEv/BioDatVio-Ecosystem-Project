@@ -153,3 +153,122 @@ class PieChart extends Chart {
 			.text((d, i) => categories[i]);
 	}
 }
+
+
+// Implementation of a Bar Chart
+class BarChart extends Chart {
+
+	constructor(width, height) {
+		super(width, height);
+
+		this.axisSeparation = 10;
+	}
+
+	set xAxisLabel(label) {
+		this.xLabel = label;
+	}
+
+	set yAxisLabel(label) {
+		this.yLabel = label;
+	}
+
+	show() {
+		this.calculateCounts();
+		this.calculateAxisBoundaries();
+
+		this.svg = this.selection
+			.append("svg")
+			.attr("width", this.width)
+			.attr("height", this.height);
+
+		this.createAxes();
+		this.createGraphics();
+	}
+
+	calculateCounts() {
+		// Get sorted counts
+		let counts = counter(this.data);
+		let entries = Object.entries(counts);
+		let sorted = entries.sort((a, b) => b[1] - a[1]);
+
+		let sorted_keys = [];
+		let sorted_values = [];
+		sorted.forEach(element => {
+			sorted_keys.push(element[0]);
+			sorted_values.push(element[1]);
+		});
+
+		this.xLabels = sorted_keys;
+		this.data = sorted_values;
+	}
+
+	calculateAxisBoundaries() {
+		// Get max of X and Y axes
+		this.maxX = this.data.length;
+		this.maxY = d3.max(this.data);
+
+		// Get min of X and Y axes
+		this.minX = 0;
+		this.minY = d3.min(this.data);
+	}
+
+	scaleBarHeight(value) {
+		return value / this.maxY * this.height;
+	}
+
+	createGraphics() {
+		let _this = this;
+
+		// Construct all bars
+		this.svg.selectAll("rect")
+			.data(this.data)
+			.enter()
+				.append("rect")
+				.attr("class", "bar")
+				.attr("width", this.xScale.bandwidth())
+				.attr("height", function(d) { return _this.scaleBarHeight(d); })
+				.attr("y", function(d) { return _this.height - _this.scaleBarHeight(d); })
+				.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); });
+	}
+
+	createAxes() {
+		// Setting up X axis
+		this.xScale = d3.scaleBand()
+			.domain(this.xLabels)
+			.range([0, this.width])
+			.paddingInner(0.05);
+
+		let xAxis = d3.axisBottom(this.xScale);
+		this.svg.append("g")
+			.attr("class", "x-axis")
+			.attr("transform", "translate(0, " + (this.height + this.axisSeparation) + ")")
+			.call(xAxis)
+				.selectAll("text")
+				.attr("dx", "-0.8em")
+				.attr("dy", "0.15em");
+
+		// Adding X axis label
+		this.svg.append("text")
+			.attr("class", "label")
+			.attr("x", this.width / 2 - 50)  // At the middle of the X axis
+			.attr("y", this.height + 40)     // Make sure it's under the axis
+			.text(this.xLabel);
+
+		// Setting up Y axis
+		let yScale = d3.scaleLinear()
+			.domain([this.minY, this.maxY])
+			.range([this.height, 0]);
+
+		let yAxis = d3.axisLeft(yScale).ticks(3);
+		this.svg.append("g")
+		.attr("transform", "translate(-" + this.axisSeparation + ", 0)")
+		.call(yAxis);
+
+		// Adding Y axis label
+		this.svg.append("text")
+			.attr("class", "label y-axis")
+			.attr("x", -40)
+			.attr("y", (this.height / 2) - 40)
+			.text(this.yLabel);
+	}
+}

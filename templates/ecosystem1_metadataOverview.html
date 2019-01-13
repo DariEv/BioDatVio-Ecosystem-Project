@@ -8,13 +8,23 @@
 	<script>
 		$(document).ready(function() {
 			let dataset = {{ data | safe }}["metadataOverview"];
-			let chartsWidth = 350;
-			let chartsHeight = 350;
+			let chartsWidth = 380;
+			let chartsHeight = chartsWidth;
 
 			// Arrange metadata values
 			let columns = groupByColumn(dataset);
+			let ageColumn = columns["Age"].values;
 			let sexColumn = columns["Sex"].values;
+			let nationColumn = columns["Nationality"].values;
 			let BMIColumn = columns["BMI_group"].values;
+
+			// Age histogram
+			let ageChart = new BarChart();
+			ageChart.selectionElement = d3.select(".age").datum(ageColumn);
+			ageChart.chartWidth = 400;
+			ageChart.chartHeight = chartsHeight;
+			ageChart.yAxisLabel = "Frequencies";
+			ageChart.show();
 
 			// Sex pie chart
 			let sexChart = new PieChart();
@@ -22,6 +32,14 @@
 			sexChart.chartWidth = chartsWidth;
 			sexChart.chartHeight = chartsHeight;
 			sexChart.show();
+
+			// Nationality histogram
+			let nationChart = new BarChart();
+			nationChart.selectionElement = d3.select(".nationality").datum(nationColumn);
+			nationChart.chartWidth = chartsWidth;
+			nationChart.chartHeight = chartsHeight;
+			nationChart.yAxisLabel = "Frequencies"
+			nationChart.show();
 
 			// BMI group pie chart
 			let BMIChart = new PieChart();
@@ -33,17 +51,17 @@
 	</script>
 
 	<div class="row metadata">
-		<div class="col-md-6">
-			<div class="age histogram"></div>
+		<div class="col-md-6 chart-wrapper">
+			<div class="age histogram chart"></div>
 		</div>
-		<div class="col-md-6">
-			<div class="sex pie-chart"></div>
+		<div class="col-md-6 chart-wrapper">
+			<div class="sex pie chart"></div>
 		</div>
-		<div class="col-md-6">
-			<div class="nationality histogram"></div>
+		<div class="col-md-6 chart-wrapper">
+			<div class="nationality histogram chart"></div>
 		</div>
-		<div class="col-md-6">
-			<div class="bmi pie-chart"></div>
+		<div class="col-md-6 chart-wrapper">
+			<div class="bmi pie chart"></div>
 		</div>
 	</div>
 

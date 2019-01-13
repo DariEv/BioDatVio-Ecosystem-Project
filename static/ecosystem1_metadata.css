@@ -1,12 +1,79 @@
-/* Pie Chart */
-.pie-chart {
-    margin-bottom: 2em;
+/* Metadata */
+
+.metadata {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 3em;
 }
 
-.pie-chart .label {
+.metadata svg {
+    overflow: visible;
+}
+
+.metadata .chart-wrapper {
+    margin-top: 2em;
+    margin-bottom: 5em;
+    text-align: center;
+}
+
+/* Chart */
+
+.chart {
+    /* padding: 1.5rem 2rem; */
+}
+
+.chart .label {
+    font-weight: normal;
+}
+
+.chart text {
+    fill: #333;
+}
+
+.chart .x-axis text {
+    text-anchor: end;
+    transform: rotate(-45deg);
+}
+
+/* Histogram */
+
+.histogram .bar {
+    fill: #17a2b8;
+}
+
+.histogram .label {
+    font-weight: bold;
+}
+
+.histogram .label.y-axis {
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    -webkit-transform-origin: left center;
+    -ms-transform-origin: left center;
+    transform-origin: left center;
+}
+
+.histogram .tick {
+    color: #555;
+}
+
+.histogram path {
+    stroke: #555;
+}
+
+/* Pie Chart */
+
+.pie .label {
     font-size: 85%;
 }
 
-.pie-chart .values {
+.pie .values {
     font-weight: bold;
 }
