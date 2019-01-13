@@ -34,6 +34,8 @@
 
 .chart .x-axis text.rotate {
 	text-anchor: end;
+	-webkit-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
 	transform: rotate(-45deg);
 }
 
@@ -41,6 +43,13 @@
 
 .histogram .bar {
 	fill: #17a2b8;
+	-webkit-transition: fill 0.1s ease-out;
+	-o-transition: fill 0.1s ease-out;
+	transition: fill 0.1s ease-out;
+}
+
+.histogram .bar:hover {
+	fill: #fc8d62;
 }
 
 .histogram .label {
@@ -65,6 +74,19 @@
 }
 
 /* Pie Chart */
+
+.pie path {
+	-webkit-transition: -webkit-transform 0.2s ease-in-out;
+	transition: -webkit-transform 0.2s ease-in-out;
+	-o-transition: transform 0.2s ease-in-out;
+	transition: transform 0.2s ease-in-out;
+	transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+}
+
+.pie path:hover {
+	-webkit-transform: scale(1.03);
+	-ms-transform: scale(1.03);
+	transform: scale(1.03);}
 
 .pie .label {
 	font-size: 85%;
