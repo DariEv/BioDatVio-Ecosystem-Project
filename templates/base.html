@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
-  <script src="{{ url_for('static', filename='ecosystem1_filter_menu.js') }}" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='ecosystem1_filter_menu.js') }}" type="text/javascript">
+    </script>
+     <link rel="stylesheet" href="{{ url_for('static', filename='ecosystem1_base.css') }}">
 </head>
 
 <body>
@@ -15,17 +17,17 @@
 
 <!-- Navigation -->
 <nav class="navbar navbar-default">
-  <div class="container-fluid">
+ 
     <div class="navbar-header">
       <a class="navbar-brand" href="#">Visualisation of human intestinal ecosystem</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="{{ url_for('project') }}">Project</a></li>
-      <li><a href="{{ url_for('dataExploration') }}">Profile exploration</a></li>
-      <li><a href="{{ url_for('metadataOverview') }}">Metadata Overview </a></li>
-	  <li><a href="{{ url_for('PCoA') }}">PCoA </a></li>
+      <li id="proj"><a href="{{ url_for('project') }}">Project</a></li>
+      <li id="prof"><a href="{{ url_for('dataExploration') }}">Profile exploration</a></li>
+      <li id="meta"><a href="{{ url_for('metadataOverview') }}">Metadata Overview </a></li>
+	  <li id="pcoa"><a href="{{ url_for('PCoA') }}">PCoA </a></li>
     </ul>
-  </div>
+
 </nav>
 
  <!-- Inhalt -->
@@ -35,7 +37,7 @@
       {% block content %}
       {% endblock %}
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3" style="background-color:darkslategray; color: white">
       <form>
         <div class="form-group">
           <h3>Filter</h3>

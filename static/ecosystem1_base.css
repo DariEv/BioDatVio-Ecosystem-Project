@@ -1,0 +1,14 @@
+li:hover {
+  background-color: lightgray;
+  color: white;
+}
+
+.active {
+  background-color: lightgray;
+  color: white;
+}
+
+
+a {
+    color: white;
+}
