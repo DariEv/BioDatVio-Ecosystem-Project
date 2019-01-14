@@ -3,19 +3,23 @@ var svg=NaN;
 var cards=NaN;
 var samplesLabel=NaN;
 var taxa=NaN;
-var margin=NaN;
+var margin={ top: 350, right: 0, bottom: 100, left: 100 };
 var width=NaN;
 var height=NaN;
 var gridSize=NaN;
-var legendElementWidth=NaN;
 var colors=NaN;
+
+var legendElementWidth=100; //todo: update for different data, depending on buckets number?
+var legendElementHeights=20;
+var buckets = 6;
+
 
 function heatmapChart() {
 	returnDictionary = {};
 	returnDictionary["init"] = function(data){
 			taxa = Object.keys(data[0]); 
 			taxa.shift();
-			console.log(data);
+			/*console.log(data);
 			console.log(data[0]);
 			console.log(taxa);
 			console.log("length", taxa.length);
@@ -31,12 +35,12 @@ function heatmapChart() {
 			*/
 			
 			//Here were the constants
-			margin = { top: 250, right: 0, bottom: 100, left: 100 },
+			//margin = { top: 350, right: 0, bottom: 100, left: 100 },
 			width = 2000 - margin.left - margin.right,
 			height = 13*data.length - margin.top - margin.bottom,
 			gridSize = Math.floor(height / (data.length)),
-			legendElementWidth = gridSize*2,
-			buckets = 9,
+			//legendElementWidth = gridSize*2,
+			//buckets = 9,
 			colors = ["#ffffcc", "#c7e9b4", "#7fcdbb", "#41b6c4", "#2c7fb8", "#253494"]; //by colorbrewer: YlGnBu[6]
 
 			svg = d3.select("#chart").append("svg")
@@ -65,13 +69,9 @@ function heatmapChart() {
 					.style("text-anchor", "start")
 					.attr("transform", "translate(" + gridSize / 2 + ", -6) rotate(-90)");
 					
-			/*var colorScale = d3.scale.quantile()
-              .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
-              .range(colors);
-			*/
 
 			cards = svg.selectAll(".sample")
-				.data(data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
+				.data(data);
 
 			cards.append("title");
 
@@ -95,6 +95,9 @@ function heatmapChart() {
 				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item]))); 		
 												return colors[c];});
 			});
+		
+			plotLegend(svg, colors, height);
+			
 			console.log('printed heatmap.');
 			
 	}
@@ -104,7 +107,7 @@ function heatmapChart() {
 			d3.selectAll(".samplesLabel").remove();
 
 			console.log(filtered_data);
-			cards=svg.selectAll(".sample").data(filtered_data);//, function(d) {return d.taxa[i]+':'+d.samples[i];});
+			cards=svg.selectAll(".sample").data(filtered_data);
 			
 			cards.enter().append("text")
 				.text(function (d) { return d[""]; })
@@ -116,9 +119,7 @@ function heatmapChart() {
 
 			taxa.forEach(function(item, taxon) {
 
-				cards.enter().append("rect")
-				  //.attr("x", function(d, i) { return (i) * gridSize; })
-				  //.attr("y", function(d, i) { return (taxon) * gridSize; })
+				cards.enter().append("rect")				
 				  .attr("x", function(d, i) { return (taxon) * gridSize; })
 				  .attr("y", function(d, i) { return (i) * gridSize; })
 				  .attr("class", "bordered")
@@ -130,3 +131,37 @@ function heatmapChart() {
 	};
     return returnDictionary; 
 };
+
+
+function plotLegend(svg, colors, height){
+	
+	legendCells = Array.apply(null, {length: buckets}).map(Number.call, Number); // array from 0 to buckets
+	
+	var legend = svg.selectAll(".legend")
+		.data(legendCells)
+		.enter().append("g")
+		.attr("class", "legend");
+
+	legend.append("rect")
+		.attr("x", function(d, i) { return legendElementWidth * i; })
+		.attr("y", -margin.top + (legendElementWidth)/3)
+		.attr("width", legendElementWidth)
+		.attr("height", legendElementHeights)
+		.style("fill", function(d, i) { return colors[i]; });
+
+	legend.append("text")
+		.attr("class", "mono")
+		.text(function(d) { return d; })
+		.attr("width", legendElementWidth)
+		.attr("x", function(d, i) { return legendElementWidth * i; })
+		.attr("y", -margin.top + (2*legendElementWidth)/3);
+		
+	legend.append("text")
+		.attr("class", "mono")
+		.text("= log_10(Taxa Relative Abundance)")
+		.attr("x", legendElementWidth * buckets)
+		.attr("y", -margin.top + (2*legendElementWidth)/3);
+	
+}
+
+
