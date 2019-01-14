@@ -1,4 +1,4 @@
-function filter_wrapper(filter_obj){
+function filter_wrapper(filter_obj,meta_switch){
   var age_from_val = +document.getElementById("FROM").value;
   var age_to_val = +document.getElementById("TO").value;
   var sex_val = document.getElementById("btn_sex").value;
@@ -9,15 +9,27 @@ function filter_wrapper(filter_obj){
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
   var nationality_filter = filter_obj.generic_filter("Nationality",nationality_val)
   var bmi_filter = filter_obj.generic_filter("BMI_group",bmi_val)
-  console.log("age")
   console.log(age_filter)
   console.log(sex_filter)
   console.log(nationality_filter)
   console.log(bmi_filter)
   test_filter = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter]) //age_filter,
 
-  var filtered_data = filter_obj.filter_data(test_filter)
-  return filtered_data
+  switch (meta_switch) {
+    case "Data":
+      var filtered_data = filter_obj.filter_data(test_filter)
+      return filtered_data
+      break;
+    case "Meta":
+      var filtered_data = filter_obj.filter_metadata(test_filter)
+      return filtered_data
+      break;
+    default:
+      var filtered_data = filter_obj.filter_data(test_filter)
+      return filtered_data
+
+  }
+
 }
 
 function filter_object(data){
@@ -104,6 +116,13 @@ function filter_object(data){
     var sample_ids = sample_ids;
     var out_array = data["dataExploration"];
     out_array = out_array.filter(row => sample_ids.includes(row[""]))
+
+    return out_array
+    }
+  returnDictionary["filter_metadata"] = function(sample_ids){
+    var sample_ids = sample_ids;
+    var out_array = data["metadataOverview"];
+    out_array = out_array.filter(row => sample_ids.includes(row["SampleID"]))
 
     return out_array
     }
