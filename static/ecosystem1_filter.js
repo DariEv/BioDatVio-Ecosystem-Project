@@ -1,18 +1,20 @@
 function filter_wrapper(filter_obj){
-  //var age_from_val = document.getElementById("AGEFROM").value;
-  //var age_to_val = document.getElementById("AGETO").value;
+  var age_from_val = +document.getElementById("FROM").value;
+  var age_to_val = +document.getElementById("TO").value;
   var sex_val = document.getElementById("btn_sex").value;
   var nationality_val = document.getElementById("btn_nationality").value;
   var bmi_val = document.getElementById("btn_bmi").value;
 
-  //var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
+  var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
   var nationality_filter = filter_obj.generic_filter("Nationality",nationality_val)
   var bmi_filter = filter_obj.generic_filter("BMI_group",bmi_val)
+  console.log("age")
+  console.log(age_filter)
   console.log(sex_filter)
   console.log(nationality_filter)
   console.log(bmi_filter)
-  test_filter = filter_obj.intersection([sex_filter,nationality_filter,bmi_filter]) //age_filter,
+  test_filter = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter]) //age_filter,
 
   var filtered_data = filter_obj.filter_data(test_filter)
   return filtered_data
@@ -36,7 +38,7 @@ function filter_object(data){
   for (i = 0; i < data["metadataOverview"].length; i++){
 
       metadata.SampleID[i] = data["metadataOverview"][i]["SampleID"];
-      metadata.Age[i] = data["metadataOverview"][i]["Age"];
+      metadata.Age[i] = +data["metadataOverview"][i]["Age"];
       metadata.Sex[i] = data["metadataOverview"][i]["Sex"];
       metadata.Nationality[i] = data["metadataOverview"][i]["Nationality"];
       metadata.DNA_extraction_method[i] = data["metadataOverview"][i]["DNA_extraction_method"];
