@@ -50,6 +50,7 @@
 
 .histogram .bar:hover {
 	fill: #fc8d62;
+	opacity: 0.9;
 }
 
 .histogram .label {
@@ -80,17 +81,20 @@
 /* Pie Chart */
 
 .pie path {
-	-webkit-transition: -webkit-transform 0.2s ease-in-out;
-	transition: -webkit-transform 0.2s ease-in-out;
-	-o-transition: transform 0.2s ease-in-out;
-	transition: transform 0.2s ease-in-out;
-	transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+	stroke: #eee;
+	-webkit-transition: opacity 0.3s, -webkit-transform 0.2s ease-in-out;
+	transition: opacity 0.3s, -webkit-transform 0.2s ease-in-out;
+	-o-transition: transform 0.2s ease-in-out, opacity 0.3s;
+	transition: transform 0.2s ease-in-out, opacity 0.3s;
+	transition: transform 0.2s ease-in-out, opacity 0.3s, -webkit-transform 0.2s ease-in-out;
 }
 
 .pie path:hover {
+	opacity: 0.9;
 	-webkit-transform: scale(1.03);
 	-ms-transform: scale(1.03);
-	transform: scale(1.03);}
+	transform: scale(1.03);
+}
 
 .pie .label {
 	font-size: 85%;

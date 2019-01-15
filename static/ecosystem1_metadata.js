@@ -124,7 +124,6 @@ class PieChart extends Chart {
 			.enter()
 				.append("path")
 				.attr("fill", (d, i) => this.scaleColor(i))
-				.attr("stroke", "white")
 				.attr("d", arc);
 
 		// Set text element for labels
