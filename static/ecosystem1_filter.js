@@ -5,6 +5,8 @@ function filter_wrapper(filter_obj,meta_switch){
   var nationality_val = document.getElementById("btn_nationality").value;
   var bmi_val = document.getElementById("btn_bmi").value;
 
+  var sort_val = document.getElementById("sortby").value;
+
   var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
   var nationality_filter = filter_obj.generic_filter("Nationality",nationality_val)
@@ -13,19 +15,26 @@ function filter_wrapper(filter_obj,meta_switch){
   console.log(sex_filter)
   console.log(nationality_filter)
   console.log(bmi_filter)
-  test_filter = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
+  var filtered_objects = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
+
+  filtered_objects.sort(sort_by(sort_val))
+
+  var filter_sampleIDs = []
+  for (elem in filtered_objects){
+    filter_sampleIDs.push(filtered_objects.SampleID)
+  }
 
   switch (meta_switch) {
     case "Data":
-      var filtered_data = filter_obj.filter_data(test_filter)
+      var filtered_data = filter_obj.filter_data(filter_sampleIDs)
       return filtered_data
       break;
     case "Meta":
-      var filtered_data = filter_obj.filter_metadata(test_filter)
+      var filtered_data = filter_obj.filter_metadata(filter_sampleIDs)
       return filtered_data
       break;
     default:
-      var filtered_data = filter_obj.filter_data(test_filter)
+      var filtered_data = filter_obj.filter_data(filter_sampleIDs)
       return filtered_data
 
   }
@@ -33,16 +42,12 @@ function filter_wrapper(filter_obj,meta_switch){
 }
 function sort_by(sort_criterion){
   return function(x,y){
-    return (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+    return (x[sort_criterion] < y[sort_criterion]) ? -1 : (x[sort_criterion] > y[sort_criterion]) ? 1 : 0;
   }
 }
 
 function filter_object(data){
   var returnDictionary = {};
-  var default_samples = []
-  for (elem in data["metadataOverview"]){
-    default_samples.push(data["metadataOverview"][elem].SampleID)
-  }
 
   returnDictionary["select_category"] = function(selector){
     console.log(metadata[selector])
@@ -54,12 +59,12 @@ function filter_object(data){
 
       case "Age":
       if(filter_criterion === "all"){
-        filtered_samples = default_samples
+        filtered_samples = data["metadataOverview"]
       }
       else{
         for (i = 0; i < data["metadataOverview"].length; i++){
           if(data["metadataOverview"][i][category] >= filter_criterion[0] && data["metadataOverview"][i][category] <= filter_criterion[1]){
-              filtered_samples.push(data["metadataOverview"][i].SampleID)
+              filtered_samples.push(data["metadataOverview"][i])
             }
           }
         }
@@ -69,12 +74,12 @@ function filter_object(data){
       case "Nationality":
       case "BMI_group":
       if(filter_criterion === "all"){
-        filtered_samples = default_samples
+        filtered_samples = data["metadataOverview"]
       }
       else{
         for (i = 0; i < data["metadataOverview"].length; i++){
           if(data["metadataOverview"][i][category] === filter_criterion){
-              filtered_samples.push(data["metadataOverview"][i].SampleID)
+              filtered_samples.push(data["metadataOverview"][i])
             }
           }
         }
@@ -86,8 +91,15 @@ function filter_object(data){
     }
   returnDictionary["intersection"] = function(id_array){
     var internal_array = id_array
-    while(id_array.length > 1){
-      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(value => -1 !== internal_array[internal_array.length-2].indexOf(value));
+    while(internal_array.length > 1){
+      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(function(n) {
+      for(var i=0; i < internal_array[internal_array.length-2].length; i++){
+        if(n.SampleID == internal_array[internal_array.length-2][i].SampleID){
+          return false;
+        }
+      }
+      return true;
+      });
       internal_array.pop()
     }
     return internal_array[0]
