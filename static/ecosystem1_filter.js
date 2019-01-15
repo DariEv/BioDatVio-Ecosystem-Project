@@ -17,12 +17,14 @@ function filter_wrapper(filter_obj,meta_switch){
   console.log(bmi_filter)
   var filtered_objects = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
 
-  filtered_objects.sort(sort_by(sort_val))
+  console.log("filtered:", filtered_objects);
+
+  filtered_objects = filtered_objects.sort(sort_by(sort_val))
 
   var filter_sampleIDs = []
-  for (elem in filtered_objects){
-    filter_sampleIDs.push(filtered_objects.SampleID)
-  }
+  filtered_objects.forEach(function(elem){
+    filter_sampleIDs.push(elem.SampleID)
+  })
 
   switch (meta_switch) {
     case "Data":
@@ -92,14 +94,8 @@ function filter_object(data){
   returnDictionary["intersection"] = function(id_array){
     var internal_array = id_array
     while(internal_array.length > 1){
-      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(function(n) {
-      for(var i=0; i < internal_array[internal_array.length-2].length; i++){
-        if(n.SampleID == internal_array[internal_array.length-2][i].SampleID){
-          return false;
-        }
-      }
-      return true;
-      });
+      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(
+        a => true === internal_array[internal_array.length-1].some( b => a.SampleID === b.SampleID ) );
       internal_array.pop()
     }
     return internal_array[0]
@@ -108,8 +104,19 @@ function filter_object(data){
 
   returnDictionary["filter_data"] = function(sample_ids){
     var sample_ids = sample_ids;
-    var out_array = data["dataExploration"];
-    out_array = out_array.filter(row => sample_ids.includes(row[""]))
+    var data_internal = data["dataExploration"];
+    var out_array = []
+    //out_array = out_array.filter(row => sample_ids.includes(row[""]))
+
+    sample_ids.forEach(function(elem){
+      for(var i = 0; i < data_internal.length; i++){
+        if(data_internal[i][""] === elem){
+          console.log(elem)
+          out_array.push(data_internal[i])
+          break;
+        }
+      }
+    })
 
     return out_array
     }
