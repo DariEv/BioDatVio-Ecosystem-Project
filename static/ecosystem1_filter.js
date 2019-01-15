@@ -111,7 +111,6 @@ function filter_object(data){
     sample_ids.forEach(function(elem){
       for(var i = 0; i < data_internal.length; i++){
         if(data_internal[i][""] === elem){
-          console.log(elem)
           out_array.push(data_internal[i])
           break;
         }
