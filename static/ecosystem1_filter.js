@@ -5,6 +5,8 @@ function filter_wrapper(filter_obj,meta_switch){
   var nationality_val = document.getElementById("btn_nationality").value;
   var bmi_val = document.getElementById("btn_bmi").value;
 
+  var sort_val = document.getElementById("sortby").value;
+
   var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
   var nationality_filter = filter_obj.generic_filter("Nationality",nationality_val)
@@ -13,54 +15,41 @@ function filter_wrapper(filter_obj,meta_switch){
   console.log(sex_filter)
   console.log(nationality_filter)
   console.log(bmi_filter)
-  test_filter = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter]) //age_filter,
+  var filtered_objects = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
+
+  console.log("filtered:", filtered_objects);
+
+  filtered_objects = filtered_objects.sort(sort_by(sort_val))
+
+  var filter_sampleIDs = []
+  filtered_objects.forEach(function(elem){
+    filter_sampleIDs.push(elem.SampleID)
+  })
 
   switch (meta_switch) {
     case "Data":
-      var filtered_data = filter_obj.filter_data(test_filter)
+      var filtered_data = filter_obj.filter_data(filter_sampleIDs)
       return filtered_data
       break;
     case "Meta":
-      var filtered_data = filter_obj.filter_metadata(test_filter)
+      var filtered_data = filter_obj.filter_metadata(filter_sampleIDs)
       return filtered_data
       break;
     default:
-      var filtered_data = filter_obj.filter_data(test_filter)
+      var filtered_data = filter_obj.filter_data(filter_sampleIDs)
       return filtered_data
 
   }
 
 }
+function sort_by(sort_criterion){
+  return function(x,y){
+    return (x[sort_criterion] < y[sort_criterion]) ? -1 : (x[sort_criterion] > y[sort_criterion]) ? 1 : 0;
+  }
+}
 
 function filter_object(data){
   var returnDictionary = {};
-  var metadata = {
-    SampleID : [data["metadataOverview"].length],
-    Age : [data["metadataOverview"].length],
-    Sex	: [data["metadataOverview"].length],
-    Nationality	: [data["metadataOverview"].length],
-    DNA_extraction_method	: [data["metadataOverview"].length],
-    ProjectID	: [data["metadataOverview"].length],
-    Diversity	: [data["metadataOverview"].length],
-    BMI_group	: [data["metadataOverview"].length],
-    SubjectID	: [data["metadataOverview"].length],
-    Time_var : [data["metadataOverview"].length]
-  }
-
-  for (i = 0; i < data["metadataOverview"].length; i++){
-
-      metadata.SampleID[i] = data["metadataOverview"][i]["SampleID"];
-      metadata.Age[i] = +data["metadataOverview"][i]["Age"];
-      metadata.Sex[i] = data["metadataOverview"][i]["Sex"];
-      metadata.Nationality[i] = data["metadataOverview"][i]["Nationality"];
-      metadata.DNA_extraction_method[i] = data["metadataOverview"][i]["DNA_extraction_method"];
-      metadata.ProjectID[i] = +data["metadataOverview"][i]["ProjectID"];
-      metadata.Diversity[i] = +data["metadataOverview"][i]["Diversity"];
-      metadata.BMI_group[i] = data["metadataOverview"][i]["BMI_group"];
-      metadata.SubjectID[i] = +data["metadataOverview"][i]["SubjectID"];
-      metadata.Time_var[i] = +data["metadataOverview"][i]["Time"];
-
-    }
 
   returnDictionary["select_category"] = function(selector){
     console.log(metadata[selector])
@@ -72,12 +61,12 @@ function filter_object(data){
 
       case "Age":
       if(filter_criterion === "all"){
-        filtered_samples = metadata.SampleID
+        filtered_samples = data["metadataOverview"]
       }
       else{
-        for (i = 0; i < metadata[category].length; i++){
-          if(metadata[category][i] >= filter_criterion[0] && metadata[category][i] <= filter_criterion[1]){
-              filtered_samples.push(metadata["SampleID"][i])
+        for (i = 0; i < data["metadataOverview"].length; i++){
+          if(data["metadataOverview"][i][category] >= filter_criterion[0] && data["metadataOverview"][i][category] <= filter_criterion[1]){
+              filtered_samples.push(data["metadataOverview"][i])
             }
           }
         }
@@ -87,12 +76,12 @@ function filter_object(data){
       case "Nationality":
       case "BMI_group":
       if(filter_criterion === "all"){
-        filtered_samples = metadata.SampleID
+        filtered_samples = data["metadataOverview"]
       }
       else{
-        for (i = 0; i < metadata[category].length; i++){
-          if(metadata[category][i] === filter_criterion){
-              filtered_samples.push(metadata["SampleID"][i])
+        for (i = 0; i < data["metadataOverview"].length; i++){
+          if(data["metadataOverview"][i][category] === filter_criterion){
+              filtered_samples.push(data["metadataOverview"][i])
             }
           }
         }
@@ -104,8 +93,9 @@ function filter_object(data){
     }
   returnDictionary["intersection"] = function(id_array){
     var internal_array = id_array
-    while(id_array.length > 1){
-      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(value => -1 !== internal_array[internal_array.length-2].indexOf(value));
+    while(internal_array.length > 1){
+      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(
+        a => true === internal_array[internal_array.length-1].some( b => a.SampleID === b.SampleID ) );
       internal_array.pop()
     }
     return internal_array[0]
@@ -114,8 +104,18 @@ function filter_object(data){
 
   returnDictionary["filter_data"] = function(sample_ids){
     var sample_ids = sample_ids;
-    var out_array = data["dataExploration"];
-    out_array = out_array.filter(row => sample_ids.includes(row[""]))
+    var data_internal = data["dataExploration"];
+    var out_array = []
+    //out_array = out_array.filter(row => sample_ids.includes(row[""]))
+
+    sample_ids.forEach(function(elem){
+      for(var i = 0; i < data_internal.length; i++){
+        if(data_internal[i][""] === elem){
+          out_array.push(data_internal[i])
+          break;
+        }
+      }
+    })
 
     return out_array
     }
