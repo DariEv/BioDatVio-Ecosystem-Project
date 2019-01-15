@@ -285,9 +285,9 @@ class BarChart extends Chart {
 
 		// Adding X axis label
 		this.svg.append("text")
-			.attr("class", "label")
-			.attr("x", this.width / 2 - 50)  // At the middle of the X axis
-			.attr("y", this.height + 40)     // Make sure it's under the axis
+			.attr("class", "label x-axis")
+			.attr("x", this.width / 2 - 20)  // At the middle of the X axis
+			.attr("y", this.height + (this.mustRotateLabels ? 80 : 50))  // Make sure it's under the axis
 			.text(this.xLabel);
 
 		// Setting up Y axis
