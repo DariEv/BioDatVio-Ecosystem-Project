@@ -12,3 +12,8 @@ li:hover {
 a {
     color: white;
 }
+
+.scrollable {
+    height: 800px;
+    overflow: auto;
+}
