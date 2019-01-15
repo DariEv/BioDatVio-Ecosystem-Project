@@ -13,7 +13,7 @@ function filter_wrapper(filter_obj,meta_switch){
   console.log(sex_filter)
   console.log(nationality_filter)
   console.log(bmi_filter)
-  test_filter = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter]) //age_filter,
+  test_filter = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
 
   switch (meta_switch) {
     case "Data":
@@ -31,36 +31,18 @@ function filter_wrapper(filter_obj,meta_switch){
   }
 
 }
+function sort_by(sort_criterion){
+  return function(x,y){
+    return (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+  }
+}
 
 function filter_object(data){
   var returnDictionary = {};
-  var metadata = {
-    SampleID : [data["metadataOverview"].length],
-    Age : [data["metadataOverview"].length],
-    Sex	: [data["metadataOverview"].length],
-    Nationality	: [data["metadataOverview"].length],
-    DNA_extraction_method	: [data["metadataOverview"].length],
-    ProjectID	: [data["metadataOverview"].length],
-    Diversity	: [data["metadataOverview"].length],
-    BMI_group	: [data["metadataOverview"].length],
-    SubjectID	: [data["metadataOverview"].length],
-    Time_var : [data["metadataOverview"].length]
+  var default_samples = []
+  for (elem in data["metadataOverview"]){
+    default_samples.push(data["metadataOverview"][elem].SampleID)
   }
-
-  for (i = 0; i < data["metadataOverview"].length; i++){
-
-      metadata.SampleID[i] = data["metadataOverview"][i]["SampleID"];
-      metadata.Age[i] = +data["metadataOverview"][i]["Age"];
-      metadata.Sex[i] = data["metadataOverview"][i]["Sex"];
-      metadata.Nationality[i] = data["metadataOverview"][i]["Nationality"];
-      metadata.DNA_extraction_method[i] = data["metadataOverview"][i]["DNA_extraction_method"];
-      metadata.ProjectID[i] = +data["metadataOverview"][i]["ProjectID"];
-      metadata.Diversity[i] = +data["metadataOverview"][i]["Diversity"];
-      metadata.BMI_group[i] = data["metadataOverview"][i]["BMI_group"];
-      metadata.SubjectID[i] = +data["metadataOverview"][i]["SubjectID"];
-      metadata.Time_var[i] = +data["metadataOverview"][i]["Time"];
-
-    }
 
   returnDictionary["select_category"] = function(selector){
     console.log(metadata[selector])
@@ -72,12 +54,12 @@ function filter_object(data){
 
       case "Age":
       if(filter_criterion === "all"){
-        filtered_samples = metadata.SampleID
+        filtered_samples = default_samples
       }
       else{
-        for (i = 0; i < metadata[category].length; i++){
-          if(metadata[category][i] >= filter_criterion[0] && metadata[category][i] <= filter_criterion[1]){
-              filtered_samples.push(metadata["SampleID"][i])
+        for (i = 0; i < data["metadataOverview"].length; i++){
+          if(data["metadataOverview"][i][category] >= filter_criterion[0] && data["metadataOverview"][i][category] <= filter_criterion[1]){
+              filtered_samples.push(data["metadataOverview"][i].SampleID)
             }
           }
         }
@@ -87,12 +69,12 @@ function filter_object(data){
       case "Nationality":
       case "BMI_group":
       if(filter_criterion === "all"){
-        filtered_samples = metadata.SampleID
+        filtered_samples = default_samples
       }
       else{
-        for (i = 0; i < metadata[category].length; i++){
-          if(metadata[category][i] === filter_criterion){
-              filtered_samples.push(metadata["SampleID"][i])
+        for (i = 0; i < data["metadataOverview"].length; i++){
+          if(data["metadataOverview"][i][category] === filter_criterion){
+              filtered_samples.push(data["metadataOverview"][i].SampleID)
             }
           }
         }
