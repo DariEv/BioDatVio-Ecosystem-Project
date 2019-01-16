@@ -7,7 +7,7 @@ function filter_wrapper(filter_obj,meta_switch){
   var nationality_val = document.getElementById("btn_nationality").value;
   var bmi_val = document.getElementById("btn_bmi").value;
 
-  var sort_val = document.getElementById("sortby").value;
+  var sort_val = document.getElementById("btn_sortby").value;
 
   var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
