@@ -34,6 +34,8 @@ def makeEcosystemDataset():
 
 #reads tsv files and calculates the PCoA matrix from it
 def calculatePCoAFromData():
+	data={}
+	
 	df = pd.read_csv("ecosystem_HITChiptsv.sec", sep="\t")
 	
 	# pcoa
@@ -46,7 +48,13 @@ def calculatePCoAFromData():
 	#out = pd.DataFrame(XPCAreduced6, index=row_names, columns=col_names).transpose()
 	out = pd.DataFrame(XPCAreduced6, columns=col_names).transpose()
 	
-	return out.to_dict()
+	data['PCAValues'] = out.to_dict()
+	
+	metadataOverview=open('ecosystem_Metadatatsv.sec', newline='')
+	data['metadataOverview']=list(csv.DictReader(metadataOverview, delimiter='\t'))
+	metadataOverview.close()
+	
+	return data
 	
 
 @app.route('/')

@@ -6,13 +6,12 @@ function plotPCoA(){
 	returnDictionary = {};
 	returnDictionary["init"] = function(data){
 		console.log("js", data);
-		console.log("js", data[1]);
 		
-		// Open both the PCoA data and grouping files.
-		//d3.tsv("foo.csv", function(error, data) {
-	    //if (error) throw error;
-		//d3.tsv("PCoA_groups.tsv", function(error, groupData) {
-	    //if (error) throw error;
+		var pcaValues = data["PCAValues"];
+		var metadata = data["metadataOverview"];
+		
+		console.log("js", pcaValues[1]);
+		
 
 		// Define the sizes and margins for our canvas.
 		var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -21,14 +20,13 @@ function plotPCoA(){
 
 		// Cast my values as numbers and determine ranges.
 		var minmax = {p1: {min:0, max:0}, p2: {min:0, max:0}}
-		Object.keys(data).forEach(function(k) {
-			//console.log(data[k].p1);
-			data[k].p1 = +data[k].p1;
-			data[k].p2 = +data[k].p2;
-			minmax.p1.min = Math.min(data[k].p1, minmax.p1.min);
-			minmax.p1.max = Math.max(data[k].p1, minmax.p1.max);
-			minmax.p2.min = Math.min(data[k].p2, minmax.p2.min);
-			minmax.p2.max = Math.max(data[k].p2, minmax.p2.max);
+		Object.keys(pcaValues).forEach(function(k) {
+			pcaValues[k].p1 = +pcaValues[k].p1;
+			pcaValues[k].p2 = +pcaValues[k].p2;
+			minmax.p1.min = Math.min(pcaValues[k].p1, minmax.p1.min);
+			minmax.p1.max = Math.max(pcaValues[k].p1, minmax.p1.max);
+			minmax.p2.min = Math.min(pcaValues[k].p2, minmax.p2.min);
+			minmax.p2.max = Math.max(pcaValues[k].p2, minmax.p2.max);
 		});
 		
 		// Actually create my canvas.
@@ -57,23 +55,12 @@ function plotPCoA(){
 		.scale(yScale);
 
 		// Set-up my colours/groups.
-		//var color = d3.scale.category10();
-		/*var groups = {};
-		groupData.forEach(function(d) {
-		groups[d.line] = d.group;
-		});*/
-
-		// Create my tooltip creating function.
-		/*var tip = d3.tip()
-		.attr('class', 'd3-tip')
-		.offset([-10, 0])
-		.html(function(d) {
-		  return "<strong>" + d.name + "</strong> (" + groups[d.name] + ")";
-		});*/
-
-
-		// Initialize my tooltip.
-		//svg.call(tip);
+		var colors = {female:"red", male:"blue"};
+		var groups = {};
+			metadata.forEach(function(d, i) {
+			groups[i] = d.Sex;
+		});
+		console.log("coloring", colors[groups[0]]);
 
 		// Draw my x-axis.
 		svg.append("g")
@@ -102,17 +89,30 @@ function plotPCoA(){
 		
 		// Create all the data points :-D.
 		svg.selectAll("circle")
-			.data(Object.values(data))
+			.data(Object.values(pcaValues))
 			.enter().append("circle")
 			//.attr("class", "circle")
 			.attr("r", 3.5)
 			.attr("cx", function(d) { return xScale(d.p1); })
 			.attr("cy", function(d) { return yScale(d.p2); })
-			.style("fill", function(d) { return "black"; });
-		//.style("stroke", function(d) { return color(groups[d.name]); })
-		//.style("fill", function(d) { return color(groups[d.name]); })
-		//.on('mouseover', tip.show)
-		//.on('mouseout', tip.hide);
+			//.style("fill", function(d) { return "black"; });
+			.style("stroke", function(d, i) { return colors[groups[i]]; })
+			.style("fill", function(d, i) { return colors[groups[i]]; })
+			.on("mouseover", function(d, i){				
+				//Update the tooltip position and value
+				d3.select("#tooltip")
+				.style("left", (d3.event.pageX) + "px")
+				.style("top", (d3.event.pageY) - 60 + "px")
+				.select("#value")
+				.text("Sample: "+i+"; Group: "+groups[i]);  
+				//Show the tooltip
+				d3.select("#tooltip").classed("hidden", false);
+			})
+			.on("mouseout", function(){
+				//d3.select(this).classed("cell-hover",false);			
+				d3.select("#tooltip").classed("hidden", true);
+			})
+			;
 
 		// Create the container for the legend if it doesn't already exist.
 		/*var legend = svg.selectAll(".legend")
