@@ -7,7 +7,7 @@ function filter_wrapper(filter_obj,meta_switch){
   var nationality_val = document.getElementById("btn_nationality").value;
   var bmi_val = document.getElementById("btn_bmi").value;
 
-  var sort_val = document.getElementById("sortby").value;
+  var sort_val = document.getElementById("btn_sortby").value;
 
   var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
@@ -97,7 +97,7 @@ function filter_object(data){
     var internal_array = id_array
     while(internal_array.length > 1){
       internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(
-        a => true === internal_array[internal_array.length-1].some( b => a.SampleID === b.SampleID ) );
+        a => internal_array[internal_array.length-2].some( b => a.SampleID === b.SampleID ) );
       internal_array.pop()
     }
     return internal_array[0]
