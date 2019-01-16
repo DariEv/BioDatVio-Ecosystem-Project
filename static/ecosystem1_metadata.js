@@ -137,17 +137,30 @@ class PieChart extends Chart {
 					(d, i) => "translate(" + arcLabel.centroid(d) + ")"
 				);
 
+		// Different separations if labels are on one
+		// of the two sides of a pie chart
+		function labelXSeparation(element) {
+			return (element.startAngle > Math.PI ? -1 : -2.5) + "em";
+		}
+
+		// Only append label if there's enough space
+		function showLabel(element, angle) {
+			return element.endAngle - element.startAngle > angle;
+		}
+
 		// Label for the percentage
 		let sum = d3.sum(values);
-		text.append("tspan")
-			.attr("x", "-1em")
+		text.filter(d => showLabel(d, 0.15))
+			.append("tspan")
+			.attr("x", labelXSeparation)
 			.attr("y", 0)
 			.attr("class", "values")
 			.text(d => (d.value / sum * 100).toFixed(2) + "%");
 
 		// Label for the category
-		text.append("tspan")
-			.attr("x", "-1em")
+		text.filter(d => showLabel(d, 0.25))
+			.append("tspan")
+			.attr("x", labelXSeparation)
 			.attr("y", "1em")
 			.text((d, i) => categories[i]);
 	}
