@@ -97,7 +97,7 @@ function filter_object(data){
     var internal_array = id_array
     while(internal_array.length > 1){
       internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(
-        a => true === internal_array[internal_array.length-1].some( b => a.SampleID === b.SampleID ) );
+        a => internal_array[internal_array.length-2].some( b => a.SampleID === b.SampleID ) );
       internal_array.pop()
     }
     return internal_array[0]
