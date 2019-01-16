@@ -1,4 +1,8 @@
+/* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
+
+
 /* Pie Chart */
+
 .pie-chart {
     margin-bottom: 2em;
 }
@@ -9,4 +13,22 @@
 
 .pie-chart .values {
     font-weight: bold;
+}
+
+p{
+	margin-left: 35px;
+}
+
+h1{
+	margin-left: 35px;
+}
+
+a:link{
+	color: black;
+
+}
+
+h1 div{
+	margin-top: 5px;
+	font-size: 35%;
 }

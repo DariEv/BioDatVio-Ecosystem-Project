@@ -1,3 +1,5 @@
+/* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
+
 $( document ).ready(function() {
     
     

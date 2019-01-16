@@ -1,4 +1,4 @@
-#Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel
+#Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19
 
 #!flask/bin/python
 from flask import Flask, render_template, request, redirect, url_for, abort, session
@@ -70,6 +70,7 @@ def PCoA():
 def metadataOverview():
     return render_template("ecosystem1_metadataOverview.html",
                            data=json.dumps(makeEcosystemDataset()))
+
 @app.route('/project')
 #renders metadataOverview subwebpage
 def project():

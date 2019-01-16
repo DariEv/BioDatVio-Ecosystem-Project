@@ -1,3 +1,5 @@
+/* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
+
 function filter_wrapper(filter_obj,meta_switch){
   var age_from_val = +document.getElementById("FROM").value;
   var age_to_val = +document.getElementById("TO").value;
