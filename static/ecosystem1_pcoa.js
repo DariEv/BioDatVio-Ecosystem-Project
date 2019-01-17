@@ -1,10 +1,43 @@
 /* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
 
 
+// from colorbrewer
+var colorMap = {
+	
+	Age: {1:"#ffffcc",
+			2:"#c7e9b4",
+			3:"#7fcdbb",
+			4:"#41b6c4",
+			5:"#1d91c0",
+			6:"#225ea8",
+			7:"#0c2c84"}, // from 18 to 77: 7-class YlGnBu
+			
+	Sex: {female:"#ef8a62", male:"#67a9cf"},  // 3-class RdBu, diverging 
+	
+	Nationality: {		
+		CentralEurope:"#8dd3c7",
+		Scandinavia: "#ffffb3",
+		SouthEurope:"#bebada",
+		UKIE:"#fb8072",
+		US:"#80b1d3",
+		EasternEurope:"#fdb462"}, //6-class Set3, qualitative
+		
+	BMI_group: {underweight:"#ffffcc",
+				lean:"#c7e9b4",
+				overweight:"#7fcdbb",
+				obese:"#41b6c4",
+				severeobese:"#2c7fb8",
+				morbidobese:"#253494"} // 6 groups: 6-class YlGnBu
+};
+
+
 function plotPCoA(){ 
 
 	returnDictionary = {};
 	returnDictionary["init"] = function(data){
+		
+		colorKey = "Sex";
+		
 		console.log("js", data);
 		
 		var pcaValues = data["PCAValues"];
@@ -83,12 +116,17 @@ function plotPCoA(){
 			.text(PCsPercentage[1]); 
 		
 		// Set-up my colours/groups.
-		var colors = {female:"red", male:"blue"};
+		var colors = colorMap[colorKey];
+		console.log(colors);
 		var groups = {};
 			metadata.forEach(function(d, i) {
-			groups[i] = d.Sex;
+				if (colorKey == "Age")
+					groups[i] = Math.floor(d[colorKey]/10);
+				else
+					groups[i] = d[colorKey];
 		});
 		console.log("coloring", colors[groups[0]]);
+		console.log("coloring", groups);
 		
 		
 		// Create all the data points
