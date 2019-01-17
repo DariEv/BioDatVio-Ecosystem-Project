@@ -39,16 +39,18 @@ def calculatePCoAFromData():
 	df = pd.read_csv("ecosystem_HITChiptsv.sec", sep="\t")
 	
 	# pcoa
-	pca6 = PCA(n_components=6)
-	XPCAreduced6 = pca6.fit_transform(df.drop(['Unnamed: 0'], axis=1))
+	pca = PCA(n_components=2)
+	XPCAreduced = pca.fit_transform(df.drop(['Unnamed: 0'], axis=1))
+	PCsPercentage = pca.explained_variance_ratio_
 	
 	# genrate output dataframe
-	col_names = ["p1","p2","p3","p4","p5","p6"]
-	row_names = ["Sample-"+str(i+1) for i in range(len(XPCAreduced6))]
-	#out = pd.DataFrame(XPCAreduced6, index=row_names, columns=col_names).transpose()
-	out = pd.DataFrame(XPCAreduced6, columns=col_names).transpose()
+	col_names = ["p1", "p2"]
+	row_names = ["Sample-"+str(i+1) for i in range(len(XPCAreduced))]
+	#out = pd.DataFrame(XPCAreduced, index=row_names, columns=col_names).transpose()
+	out = pd.DataFrame(XPCAreduced, columns=col_names).transpose()
 	
 	data['PCAValues'] = out.to_dict()
+	data['PCsPercentage'] = ["PC"+str(i+1)+", "+str(round(PCsPercentage[i]*100, 1))+"%"  for i in range(len(PCsPercentage))]
 	
 	metadataOverview=open('ecosystem_Metadatatsv.sec', newline='')
 	data['metadataOverview']=list(csv.DictReader(metadataOverview, delimiter='\t'))
