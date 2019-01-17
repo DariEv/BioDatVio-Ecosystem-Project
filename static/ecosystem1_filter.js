@@ -1,5 +1,20 @@
 /* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
 
+function filter_from_object(obj, bool_array){
+  var obj_keys = Object.keys(obj);
+  var out_obj = {}
+
+  obj_keys =  obj_keys.filter(function(elem, idx){
+
+    return bool_array[idx]
+  })
+  obj_keys.forEach(function(elem){
+    out_obj[elem] = obj[elem];
+  })
+  console.log(out_obj)
+  return out_obj
+}
+
 function filter_wrapper(filter_obj,meta_switch){
   var age_from_val = +document.getElementById("FROM").value;
   var age_to_val = +document.getElementById("TO").value;
@@ -8,6 +23,10 @@ function filter_wrapper(filter_obj,meta_switch){
   var bmi_val = document.getElementById("btn_bmi").value;
 
   var sort_val = document.getElementById("btn_sortby").value;
+
+  var bool_array = Array(1000).fill(false)
+  bool_array[0] = true
+  bool_array[1] = true
 
   var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
@@ -30,7 +49,7 @@ function filter_wrapper(filter_obj,meta_switch){
 
   switch (meta_switch) {
     case "Data":
-      var filtered_data = filter_obj.filter_data(filter_sampleIDs)
+      var filtered_data = filter_obj.filter_data(filter_sampleIDs,bool_array)
       return filtered_data
       break;
     case "Meta":
@@ -104,7 +123,7 @@ function filter_object(data){
 
   }
 
-  returnDictionary["filter_data"] = function(sample_ids){
+  returnDictionary["filter_data"] = function(sample_ids,bool_arr){
     var sample_ids = sample_ids;
     var data_internal = data["dataExploration"];
     var out_array = []
@@ -113,7 +132,7 @@ function filter_object(data){
     sample_ids.forEach(function(elem){
       for(var i = 0; i < data_internal.length; i++){
         if(data_internal[i][""] === elem){
-          out_array.push(data_internal[i])
+          out_array.push(filter_from_object(data_internal[i], bool_arr))
           break;
         }
       }
