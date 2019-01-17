@@ -8,13 +8,14 @@ function plotPCoA(){
 		console.log("js", data);
 		
 		var pcaValues = data["PCAValues"];
+		var PCsPercentage = data["PCsPercentage"];
 		var metadata = data["metadataOverview"];
 		
 		console.log("js", pcaValues[1]);
 		
 
 		// Define the sizes and margins for our canvas.
-		var margin = {top: 20, right: 20, bottom: 30, left: 40},
+		var margin = {top: 20, right: 20, bottom: 60, left: 80},
 		width = 960 - margin.left - margin.right,
 		height = 500 - margin.top - margin.bottom;
 
@@ -38,22 +39,49 @@ function plotPCoA(){
 
 		// Set-up my x scale.
 		var xScale = d3.scaleLinear()
-		.range([0, width])
-		.domain([Math.floor(minmax.p1.min), Math.ceil(minmax.p1.max)]);
+			.range([0, width])
+			.domain([Math.floor(minmax.p1.min), Math.ceil(minmax.p1.max)]);
 
 		// Set-up my y scale.
 		var yScale = d3.scaleLinear()
-		.range([height, 0])
-		.domain([Math.floor(minmax.p2.min), Math.ceil(minmax.p2.max)]);
+			.range([height, 0])
+			.domain([Math.floor(minmax.p2.min), Math.ceil(minmax.p2.max)]);
 
 		// Create my x-axis using my scale.
 		var xAxis = d3.axisBottom()
-		.scale(xScale);
+			.scale(xScale);
 
 		// Create my y-axis using my scale.
 		var yAxis = d3.axisLeft()
-		.scale(yScale);
+			.scale(yScale);
 
+		// Draw my x-axis.
+		svg.append("g")
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + yScale(minmax.p2.min) + ")")
+			.call(xAxis);				
+
+		// Draw my y-axis.
+		svg.append("g")
+			.attr("class", "y axis")
+			.attr("transform", "translate(" + xScale(minmax.p1.min) + ",0)")
+			.call(yAxis);
+				
+		// text label for the x axis
+		svg.append("text")             
+			.attr("transform", "translate(" + (width/2) + "," + (height + margin.top + margin.bottom/2) + ")")
+			.style("text-anchor", "middle")
+			.text(PCsPercentage[0]);
+	
+		// text label for the y axis
+		svg.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 0 - margin.left)
+			.attr("x",0 - (height / 2))
+			.attr("dy", "1em")
+			.style("text-anchor", "middle")
+			.text(PCsPercentage[1]); 
+		
 		// Set-up my colours/groups.
 		var colors = {female:"red", male:"blue"};
 		var groups = {};
@@ -61,33 +89,9 @@ function plotPCoA(){
 			groups[i] = d.Sex;
 		});
 		console.log("coloring", colors[groups[0]]);
-
-		// Draw my x-axis.
-		svg.append("g")
-		.attr("class", "x axis")
-		.attr("transform", "translate(0," + yScale(0) + ")")
-		.call(xAxis)
-		.append("text")
-		.attr("class", "label")
-		.attr("x", width)
-		.attr("y", -6)
-		.style("text-anchor", "end")
-		.text("Coord. 1");
-
-		// Draw my y-axis.
-		svg.append("g")
-		.attr("class", "y axis")
-		.attr("transform", "translate(" + xScale(0) + ",0)")
-		.call(yAxis)
-		.append("text")
-		.attr("class", "label")
-		.attr("transform", "rotate(-90)")
-		.attr("y", 6)
-		.attr("dy", ".71em")
-		.style("text-anchor", "end")
-		.text("Coord. 2");
 		
-		// Create all the data points :-D.
+		
+		// Create all the data points
 		svg.selectAll("circle")
 			.data(Object.values(pcaValues))
 			.enter().append("circle")
