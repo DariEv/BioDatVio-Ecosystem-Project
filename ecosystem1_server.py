@@ -46,10 +46,10 @@ def calculatePCoAFromData():
 	# genrate output dataframe
 	col_names = ["p1", "p2"]
 	row_names = ["Sample-"+str(i+1) for i in range(len(XPCAreduced))]
-	#out = pd.DataFrame(XPCAreduced, index=row_names, columns=col_names).transpose()
-	out = pd.DataFrame(XPCAreduced, columns=col_names).transpose()
+	out = pd.DataFrame(XPCAreduced, index=row_names, columns=col_names).transpose()
+	#out = pd.DataFrame(XPCAreduced, columns=col_names).transpose()
 	
-	data['PCAValues'] = out.to_dict()
+	data['dataExploration'] = out.to_dict()
 	data['PCsPercentage'] = ["PC"+str(i+1)+", "+str(round(PCsPercentage[i]*100, 1))+"%"  for i in range(len(PCsPercentage))]
 	
 	metadataOverview=open('ecosystem_Metadatatsv.sec', newline='')
