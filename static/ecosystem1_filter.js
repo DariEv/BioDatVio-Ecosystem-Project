@@ -11,7 +11,7 @@ function filter_from_object(obj, bool_array){
   obj_keys.forEach(function(elem){
     out_obj[elem] = obj[elem];
   })
-  console.log(out_obj)
+  //console.log(out_obj)
   return out_obj
 }
 

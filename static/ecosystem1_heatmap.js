@@ -5,6 +5,7 @@
 var svg=NaN;
 var cards=NaN;
 var samplesLabel=NaN;
+var taxaLabels=NaN;
 var taxa=NaN;
 var margin={ top: 350, right: 0, bottom: 100, left: 100 };
 var width=NaN;
@@ -65,7 +66,8 @@ function heatmapChart() {
 
 			var taxaLabels = svg.selectAll(".taxaLabels")
 				  .data(taxa)
-				  .enter().append("text")			
+				  .enter().append("text")
+				  	.attr("class","taxaLabels")			
 					.text(function(d) { return d; })					
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
@@ -119,8 +121,7 @@ function heatmapChart() {
 						/*d3.selectAll(".rowLabel").classed("text-highlight",false);
 						d3.selectAll(".colLabel").classed("text-highlight",false);*/
 						d3.select("#tooltip").classed("hidden", true);
-					})
-				;
+					});
 			});
 	
 			plotLegend(svg, colors, height);
@@ -132,6 +133,20 @@ function heatmapChart() {
 	returnDictionary['update']=function(filtered_data){
 			d3.selectAll(".bordered").remove();
 			d3.selectAll(".samplesLabel").remove();
+			d3.selectAll(".taxaLabels").remove();
+
+			taxa = Object.keys(filtered_data[0]); 
+			taxa.shift();
+
+			taxaLabels = svg.selectAll(".taxaLabels")
+				  .data(taxa)
+				  .enter().append("text")
+				  	.attr("class","taxaLabels")			
+					.text(function(d) { return d; })					
+					.attr("y", function(d, i) { return i * gridSize; })
+					.attr("x", 0)
+					.style("text-anchor", "start")
+					.attr("transform", "translate(" + gridSize / 2 + ", -6) rotate(-90)");
 
 			console.log(filtered_data);
 			cards=svg.selectAll(".sample").data(filtered_data);
@@ -153,7 +168,31 @@ function heatmapChart() {
 				  .attr("width", gridSize)
 				  .attr("height", gridSize)
 				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item]))); 		
-												return colors[c];});
+												return colors[c];})
+				  .on("mouseover", function(d, i){
+
+						//d3.select(this).style("fill", "orange");												
+						//highlight text
+						d3.select(this).classed("cell-hover",true);
+						d3.selectAll(".samplesLabel").classed("text-highlight",function(r,ri){ return ri==(d.row-1);});
+						d3.selectAll(".taxaLabels").classed("text-highlight",function(c,ci){ return ci==(d.col-1);});
+						
+						//Update the tooltip position and value
+						d3.select("#tooltip")
+						.style("left", (d3.event.pageX) + "px")
+						.style("top", (d3.event.pageY) - 40 + "px")
+						.select("#value")
+						.text("Sample: "+i+"; Taxa: "+item);  
+						//Show the tooltip
+						d3.select("#tooltip").classed("hidden", false);
+
+					})
+					.on("mouseout", function(){
+						d3.select(this).classed("cell-hover",false);
+						/*d3.selectAll(".rowLabel").classed("text-highlight",false);
+						d3.selectAll(".colLabel").classed("text-highlight",false);*/
+						d3.select("#tooltip").classed("hidden", true);
+					});
 			}); 
 	};
     return returnDictionary; 
