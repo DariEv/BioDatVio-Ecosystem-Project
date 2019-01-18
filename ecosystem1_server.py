@@ -10,6 +10,7 @@ import math
 import csv
 import pandas as pd
 
+from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from collections import Counter
 
@@ -38,9 +39,12 @@ def calculatePCoAFromData():
 	
 	df = pd.read_csv("ecosystem_HITChiptsv.sec", sep="\t")
 	
+	# normalize data
+	data_scaled = pd.DataFrame(preprocessing.scale(df.drop(['Unnamed: 0'], axis=1)), columns = df.drop(['Unnamed: 0'], axis=1).columns)
+	
 	# pcoa
 	pca = PCA(n_components=2)
-	XPCAreduced = pca.fit_transform(df.drop(['Unnamed: 0'], axis=1))
+	XPCAreduced = pca.fit_transform(data_scaled)
 	PCsPercentage = pca.explained_variance_ratio_
 	
 	# genrate output dataframe
