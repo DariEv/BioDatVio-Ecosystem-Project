@@ -19,3 +19,12 @@ a {
     height: 800px;
     overflow: auto;
 }
+
+body { padding-top: 70px; }
+
+#filter {
+
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 50px;
+}

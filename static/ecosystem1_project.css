@@ -15,12 +15,8 @@
     font-weight: bold;
 }
 
-p{
-	margin-left: 35px;
-}
-
-h1{
-	margin-left: 35px;
+.container-fluid {
+    margin : 40px;
 }
 
 a:link{
@@ -32,3 +28,5 @@ h1 div{
 	margin-top: 5px;
 	font-size: 35%;
 }
+
+body { padding-top: 70px; }

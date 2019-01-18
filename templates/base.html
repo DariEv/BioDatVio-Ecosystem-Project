@@ -18,7 +18,7 @@
 
 
 <!-- Navigation -->
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
 
     <div class="navbar-header">
       <a class="navbar-brand" href="#">Visualisation of human intestinal ecosystem</a>
@@ -39,7 +39,7 @@
       {% block content %}
       {% endblock %}
     </div>
-    <div class="col-md-3" style="background-color:darkslategray; color: white">
+    <div class="col-md-3" style="background-color:darkslategray; color: white" id="filter"> 
       <form>
         <div class="form-group">
           <h3>Filter</h3>
@@ -59,8 +59,9 @@
           </div>
         </div>
         <div class="form-group">
-        <label>Sex:</label>
-          <div class="dropdown">
+            <div class="row">
+                <label class="col-xs-3">Sex:</label>
+                 <div class="dropdown col-xs-4">
             <button class="btn btn-default dropdown-toggle" type="button" id="btn_sex" data-toggle="dropdown" value = "all">Sex
             <span class="caret"></span></button>
             <ul id="SEX" class="dropdown-menu" role="menu" aria-labelledby="menu1">
@@ -70,11 +71,15 @@
               <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="NA">NA</a></li>
             </ul>
           </div>
+            </div>
         </div>
+        
+        
         <div class="form-group">
-        <label>Nationality:</label>
-          <div class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="btn_nationality" data-toggle="dropdown" value="all">Nationality
+            <div class="row">
+                <label class="col-xs-3">Nationality:</label>
+                 <div class="dropdown col-xs-4">
+                <button class="btn btn-default dropdown-toggle" type="button" id="btn_nationality" data-toggle="dropdown" value="all">Nationality
             <span class="caret"></span></button>
             <ul id="NATIONALITY" class="dropdown-menu" role="menu" aria-labelledby="menu1">
               <li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="all">all</a></li>
@@ -88,9 +93,13 @@
             </ul>
           </div>
         </div>
+            </div>
+            
+            
         <div class="form-group">
-          <label>BMI:</label>
-          <div class="dropdown">
+            <div class="row">
+                <label class="col-xs-3">BMI:</label>
+                 <div class="dropdown col-xs-4">
             <button class="btn btn-default dropdown-toggle" type="button" id="btn_bmi" data-toggle="dropdown" value="all">BMI
             <span class="caret"></span></button>
             <ul id="BMI" class="dropdown-menu" role="menu" aria-labelledby="menu1">
@@ -103,9 +112,12 @@
             </ul>
           </div>
         </div>
-        <div class="form-group">
-          <label>Sort by:</label>
-          <div class="dropdown">
+            </div>
+                     
+  <div class="form-group">
+            <div class="row">
+                <label class="col-xs-3">Sort by:</label>
+                 <div class="dropdown col-xs-4">    
             <button class="btn btn-default dropdown-toggle" type="button" id="btn_sortby" data-toggle="dropdown" value="">Default
             <span class="caret"></span></button>
             <ul id="sortby" class="dropdown-menu" role="menu" aria-labelledby="menu1">
@@ -119,6 +131,7 @@
         </div>
       </form>
     </div>
+      </div>
   </div>
 </div>
 </body>
