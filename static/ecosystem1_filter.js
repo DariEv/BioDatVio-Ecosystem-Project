@@ -1,5 +1,30 @@
 /* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
 
+function generate_bool_array(html_string){
+  var split_string = html_string.split(";")
+  var bool_array = Array(1000).fill(false)
+  bool_array[0] = true
+
+  split_string.forEach(function(elem){
+    if (elem === "all"){
+      bool_array = Array(1000).fill(true)
+    }
+    else if (elem.indexOf('-') > -1)
+      {
+        var range = elem.split("-")
+        for(var i = +range[0]+1; i <= +range[1]; i++){
+          bool_array[i] = true;
+        }
+      }
+    else {
+      bool_array[+elem] = true
+    }
+  }
+
+  )
+  return bool_array
+}
+
 function filter_from_object(obj, bool_array){
   var obj_keys = Object.keys(obj);
   var out_obj = {}
@@ -24,9 +49,7 @@ function filter_wrapper(filter_obj,meta_switch){
 
   var sort_val = document.getElementById("btn_sortby").value;
 
-  var bool_array = Array(1000).fill(false)
-  bool_array[0] = true
-  bool_array[1] = true
+  var keep_cols = document.getElementById("COLS").value;
 
   var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
@@ -41,6 +64,8 @@ function filter_wrapper(filter_obj,meta_switch){
   console.log("filtered:", filtered_objects);
 
   filtered_objects = filtered_objects.sort(sort_by(sort_val))
+
+  var bool_array = generate_bool_array(keep_cols)
 
   var filter_sampleIDs = []
   filtered_objects.forEach(function(elem){
