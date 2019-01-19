@@ -12,7 +12,7 @@ function generate_bool_array(html_string){
     else if (elem.indexOf('-') > -1)
       {
         var range = elem.split("-")
-        for(var i = +range[0]+1; i <= +range[1]; i++){
+        for(var i = +range[0]; i <= +range[1]; i++){
           bool_array[i] = true;
         }
       }
