@@ -24,9 +24,9 @@
 
 			rect.cell-hover {
 				stroke: #F00;
-				stroke-width:0.3px;   
+				stroke-width:0.3px;
 			}
-	  
+
 		  #tooltip {
 			position: absolute;
 			width: 200px;
@@ -91,6 +91,10 @@
 					myPlot.update(filter_wrapper(filter,"Data"));
 				});
 				document.querySelector('#AGE').addEventListener('click', function(){
+					console.log(filter_wrapper(filter,"Data"))
+					myPlot.update(filter_wrapper(filter,"Data"));
+				});
+				document.querySelector('#COLUMN').addEventListener('click', function(){
 					console.log(filter_wrapper(filter,"Data"))
 					myPlot.update(filter_wrapper(filter,"Data"));
 				});

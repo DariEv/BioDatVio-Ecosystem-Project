@@ -55,13 +55,13 @@ function filter_wrapper(filter_obj,meta_switch){
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
   var nationality_filter = filter_obj.generic_filter("Nationality",nationality_val)
   var bmi_filter = filter_obj.generic_filter("BMI_group",bmi_val)
-  console.log(age_filter)
-  console.log(sex_filter)
-  console.log(nationality_filter)
-  console.log(bmi_filter)
+  //console.log(age_filter)
+  //console.log(sex_filter)
+  //console.log(nationality_filter)
+  //console.log(bmi_filter)
   var filtered_objects = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
 
-  console.log("filtered:", filtered_objects);
+  //console.log("filtered:", filtered_objects);
 
   filtered_objects = filtered_objects.sort(sort_by(sort_val))
 
