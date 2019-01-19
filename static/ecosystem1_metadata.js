@@ -177,6 +177,9 @@ class BarChart extends Chart {
 
 		this.axisSeparation = 10;
 		this.mustRotateLabels = false;
+
+		// Allow internal margin for axis and labels
+		this.margin = {top: 10, right: 20, bottom: 85, left: 60};
 	}
 
 	set xAxisLabel(label) {
@@ -196,16 +199,28 @@ class BarChart extends Chart {
 	}
 
 	show() {
-		this.calculateCounts();
-		this.calculateAxisBoundaries();
+		this.width -= (this.margin.left + this.margin.right),
+		this.height -= (this.margin.top + this.margin.bottom);
 
+		this.createLayout();
+		this.createGraphics();
+	}
+
+	createLayout() {
+		// Create SVG element as container
 		this.svg = this.selection
 			.append("svg")
-			.attr("width", this.width)
-			.attr("height", this.height);
+			.attr("width", this.width + this.margin.left + this.margin.right)
+			.attr("height", this.height + this.margin.top + this.margin.bottom)
+			.append("g")
+				.attr(
+					"transform",
+					"translate(" + this.margin.left + "," + this.margin.top + ")"
+				);
 
 		this.createAxes();
-		this.createGraphics();
+		this.appendAxes();
+		this.createAxisLabels();
 	}
 
 	calculateCounts() {
@@ -232,10 +247,6 @@ class BarChart extends Chart {
 		// Get max of X and Y axes
 		this.maxX = this.data.length;
 		this.maxY = d3.max(this.data);
-
-		// Get min of X and Y axes
-		this.minX = 0;
-		this.minY = d3.min(this.data);
 	}
 
 	scaleBarHeight(value) {
@@ -245,16 +256,66 @@ class BarChart extends Chart {
 	createGraphics() {
 		let _this = this;
 
-		// Construct all bars
-		this.svg.selectAll("rect")
-			.data(this.data)
-			.enter()
-				.append("rect")
-				.attr("class", "bar")
-				.attr("width", this.xScale.bandwidth())
-				.attr("height", function(d) { return _this.scaleBarHeight(d); })
-				.attr("y", function(d) { return _this.height - _this.scaleBarHeight(d); })
-				.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); });
+		// Update axes ranges
+		this.calculateCounts();
+		this.calculateAxisBoundaries();
+
+		// Set scales' domains
+		this.xScale.domain(this.xLabels);
+		this.yScale.domain([0, this.maxY]);
+		this.xAxis.tickValues(this.getLabelsToDisplay());
+
+		// Update axes DOM elements
+		this.svg.select(".x-axis")
+			.transition()
+			.duration(300)
+			.call(this.xAxis);
+
+		// Rotate labels after drawing them
+		if (this.mustRotateLabels) {
+			this.x.selectAll("text")
+				.attr("dx", "-0.8em")
+				.attr("dy", "0.15em")
+				.attr("class", "rotate");
+		}
+
+		this.svg.select(".y-axis")
+			.transition()
+			.duration(300)
+			.call(this.yAxis);
+
+		let drawBars = function(selection) {
+			selection
+			.attr("width", _this.xScale.bandwidth())
+			.attr("height", function(d, i) { return _this.scaleBarHeight(d); })
+			.attr("y", function(d) { return _this.height - _this.scaleBarHeight(d); })
+			.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); })
+		};
+
+		// Construct bars
+		let bars = this.svg.selectAll("rect")
+			.data(this.data, function(d, i) { return i; });
+
+		// Remove unused bars
+		bars.exit()
+			.transition()
+			.duration(1000)
+			.attr("height", function(d) { return _this.scaleBarHeight(0); })
+			.attr("y", function(d) { return _this.height - _this.scaleBarHeight(0); })
+			.remove();
+
+		// Add new bars
+		bars.enter()
+			.append("rect")
+			.attr("class", "bar")
+			.attr("height", _this.scaleBarHeight(0))
+			.attr("y", _this.height)
+			.call(drawBars);
+
+		// Update new bar position
+		bars.transition()
+			.duration(1000)
+			.call(drawBars);
 	}
 
 	getLabelsToDisplay() {
@@ -263,6 +324,7 @@ class BarChart extends Chart {
 		this.xLabels.forEach((element) => {
 			// If label is a number, don't show all of them
 			let add_value = (
+				this.xLabels.length <= 13 ||
 				!$.isNumeric(element) ||
 				($.isNumeric(element) && parseFloat(element) % 5 === 0)
 			);
@@ -275,28 +337,37 @@ class BarChart extends Chart {
 	}
 
 	createAxes() {
-		// Setting up X axis
+		// Create X scale
 		this.xScale = d3.scaleBand()
-			.domain(this.xLabels)
 			.range([0, this.width])
 			.paddingInner(0.05);
 
-		let xAxis = d3.axisBottom(this.xScale)
-			.tickValues(this.getLabelsToDisplay());
+		// Set up X axis
+		this.xAxis = d3.axisBottom(this.xScale);
 
-		let axis = this.svg.append("g")
+		// Create Y scale
+		this.yScale = d3.scaleLinear()
+			.range([this.height, 0]);
+
+		// Set up Y axis
+		this.yAxis = d3.axisLeft(this.yScale).ticks(3);
+	}
+
+	appendAxes() {
+		// Append X axis
+		this.x = this.svg.append("g")
 			.attr("class", "x-axis")
 			.attr("transform", "translate(0, " + (this.height + this.axisSeparation) + ")")
-			.call(xAxis)
+			.call(this.xAxis)
 
-		// Add attributes for label rotation
-		if (this.mustRotateLabels) {
-			axis.selectAll("text")
-				.attr("dx", "-0.8em")
-				.attr("dy", "0.15em")
-				.attr("class", "rotate");
-		}
+		// Append Y axis
+		this.svg.append("g")
+			.attr("class", "y-axis")
+			.attr("transform", "translate(-" + this.axisSeparation + ", 0)")
+			.call(this.yAxis);
+	}
 
+	createAxisLabels() {
 		// Adding X axis label
 		this.svg.append("text")
 			.attr("class", "label x-axis")
@@ -304,21 +375,16 @@ class BarChart extends Chart {
 			.attr("y", this.height + (this.mustRotateLabels ? 80 : 50))  // Make sure it's under the axis
 			.text(this.xLabel);
 
-		// Setting up Y axis
-		let yScale = d3.scaleLinear()
-			.domain([this.minY, this.maxY])
-			.range([this.height, 0]);
-
-		let yAxis = d3.axisLeft(yScale).ticks(3);
-		this.svg.append("g")
-		.attr("transform", "translate(-" + this.axisSeparation + ", 0)")
-		.call(yAxis);
-
 		// Adding Y axis label
 		this.svg.append("text")
 			.attr("class", "label y-axis")
-			.attr("x", -40)
-			.attr("y", (this.height / 2) - 40)
+			.attr("x", 0)
+			.attr("y", this.height / 2)
 			.text(this.yLabel);
+	}
+
+	update(filtered_data) {
+		this.data = filtered_data;
+		this.createGraphics();
 	}
 }

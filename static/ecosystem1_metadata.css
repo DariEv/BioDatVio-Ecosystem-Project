@@ -15,13 +15,8 @@
 	margin-bottom: 3em;
 }
 
-.metadata svg {
-	overflow: visible;
-}
-
 .metadata .chart-wrapper {
-	margin-top: 2em;
-	margin-bottom: 5em;
+	margin: 2em 0;
 	text-align: center;
 }
 
@@ -82,6 +77,10 @@
 }
 
 /* Pie Chart */
+
+.pie svg {
+	overflow: visible;
+}
 
 .pie path {
 	stroke: #eee;
