@@ -7,7 +7,6 @@ var cards=NaN;
 var samplesLabel=NaN;
 var taxaLabels=NaN;
 var taxa=NaN;
-var col_taxa=NaN;
 var margin={ top: 350, right: 0, bottom: 100, left: 100 };
 var width=NaN;
 var height=NaN;
@@ -22,20 +21,13 @@ var buckets = 6;
 function heatmapChart() {
 	returnDictionary = {};
 	returnDictionary["init"] = function(data){
-			taxa = Object.keys(data[0]); 
+			taxa = Object.keys(data[0]);
 			taxa.shift();
-
-			col_taxa={};
-			taxa.forEach(function(taxa,i){
-				col_taxa[taxa]=i+1;
-			});
-			console.log("col_taxa:");
-			console.log(col_taxa);
 			/*console.log(data);
 			console.log(data[0]);
 			console.log(taxa);
 			console.log("length", taxa.length);
-			
+
 			/*
 			var samples = new Array(data.length); // create an empty array
 			for(var i = 0; i < samples.length; i++){
@@ -45,7 +37,7 @@ function heatmapChart() {
 			var max_of_array = Math.max.apply(Math, data);
 			console.log('max', max_of_array);
 			*/
-			
+
 			//Here were the constants
 			//margin = { top: 350, right: 0, bottom: 100, left: 100 },
 			width = 2000 - margin.left - margin.right,
@@ -59,8 +51,8 @@ function heatmapChart() {
 			  .attr("width", width + margin.left + margin.right)
 			  .attr("height", height + margin.top + margin.bottom)
 			  .append("g")
-			  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");			  			  
-			  
+			  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 			/*
 			samplesLabel = svg.selectAll(".samplesLabel")
 			  .data(samples)
@@ -75,13 +67,13 @@ function heatmapChart() {
 			var taxaLabels = svg.selectAll(".taxaLabels")
 				  .data(taxa)
 				  .enter().append("text")
-				  	.attr("class","taxaLabels")			
-					.text(function(d) { return d+"\t["+col_taxa[d]+"]"; })					
+				  	.attr("class","taxaLabels")
+					.text(function(d,i) { return +i+1 +": "+ d; })					
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
 					.attr("transform", "translate(" + gridSize / 2 + ", -6) rotate(-90)");
-					
+
 
 			cards = svg.selectAll(".sample")
 				.data(data);
@@ -96,7 +88,7 @@ function heatmapChart() {
 				.attr('pointer-events', 'all')
 				.style("text-anchor", "end")
 				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
-			
+
 			taxa.forEach(function(item, taxon) {
 				cards.enter().append("rect")
 					.attr("x", function(d, i) { return (taxon) * gridSize; })
@@ -104,22 +96,22 @@ function heatmapChart() {
 					.attr("class", "bordered")
 					.attr("width", gridSize)
 					.attr("height", gridSize)
-					.style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item]))); 		
+					.style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item])));
 												return colors[c];})
 					.on("mouseover", function(d, i){
 
-						//d3.select(this).style("fill", "orange");												
+						//d3.select(this).style("fill", "orange");
 						//highlight text
 						d3.select(this).classed("cell-hover",true);
 						d3.selectAll(".samplesLabel").classed("text-highlight",function(r,ri){ return ri==(d.row-1);});
 						d3.selectAll(".taxaLabels").classed("text-highlight",function(c,ci){ return ci==(d.col-1);});
-						
+
 						//Update the tooltip position and value
 						d3.select("#tooltip")
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) - 40 + "px")
 						.select("#value")
-						.text("Sample: "+i+"; Taxa: "+item);  
+						.text("Sample: "+i+"; Taxa: "+item);
 						//Show the tooltip
 						d3.select("#tooltip").classed("hidden", false);
 
@@ -131,11 +123,11 @@ function heatmapChart() {
 						d3.select("#tooltip").classed("hidden", true);
 					});
 			});
-	
+
 			plotLegend(svg, colors, height);
-			
+
 			console.log('printed heatmap.');
-			
+
 	}
 
 	returnDictionary['update']=function(filtered_data){
@@ -143,14 +135,14 @@ function heatmapChart() {
 			d3.selectAll(".samplesLabel").remove();
 			d3.selectAll(".taxaLabels").remove();
 
-			taxa = Object.keys(filtered_data[0]); 
+			taxa = Object.keys(filtered_data[0]);
 			taxa.shift();
 
 			taxaLabels = svg.selectAll(".taxaLabels")
 				  .data(taxa)
 				  .enter().append("text")
-				  	.attr("class","taxaLabels")			
-					.text(function(d) { return d+"\t["+col_taxa[d]+"]"; })					
+				  	.attr("class","taxaLabels")
+					.text(function(d) { return d; })
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
@@ -158,7 +150,7 @@ function heatmapChart() {
 
 			console.log(filtered_data);
 			cards=svg.selectAll(".sample").data(filtered_data);
-			
+
 			cards.enter().append("text")
 				.text(function (d) { return d[""]; })
 				.attr("class", "samplesLabel")
@@ -169,28 +161,28 @@ function heatmapChart() {
 
 			taxa.forEach(function(item, taxon) {
 
-				cards.enter().append("rect")				
+				cards.enter().append("rect")
 				  .attr("x", function(d, i) { return (taxon) * gridSize; })
 				  .attr("y", function(d, i) { return (i) * gridSize; })
 				  .attr("class", "bordered")
 				  .attr("width", gridSize)
 				  .attr("height", gridSize)
-				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item]))); 		
+				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item])));
 												return colors[c];})
 				  .on("mouseover", function(d, i){
 
-						//d3.select(this).style("fill", "orange");												
+						//d3.select(this).style("fill", "orange");
 						//highlight text
 						d3.select(this).classed("cell-hover",true);
 						d3.selectAll(".samplesLabel").classed("text-highlight",function(r,ri){ return ri==(d.row-1);});
 						d3.selectAll(".taxaLabels").classed("text-highlight",function(c,ci){ return ci==(d.col-1);});
-						
+
 						//Update the tooltip position and value
 						d3.select("#tooltip")
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) - 40 + "px")
 						.select("#value")
-						.text("Sample: "+i+"; Taxa: "+item);  
+						.text("Sample: "+i+"; Taxa: "+item);
 						//Show the tooltip
 						d3.select("#tooltip").classed("hidden", false);
 
@@ -201,16 +193,16 @@ function heatmapChart() {
 						d3.selectAll(".colLabel").classed("text-highlight",false);*/
 						d3.select("#tooltip").classed("hidden", true);
 					});
-			}); 
+			});
 	};
-    return returnDictionary; 
+    return returnDictionary;
 };
 
 
 function plotLegend(svg, colors, height){
-	
+
 	legendCells = Array.apply(null, {length: buckets}).map(Number.call, Number); // array from 0 to buckets
-	
+
 	var legend = svg.selectAll(".legend")
 		.data(legendCells)
 		.enter().append("g")
@@ -223,7 +215,7 @@ function plotLegend(svg, colors, height){
 		.attr("height", legendElementHeights)
 		.attr('pointer-events', 'all')
 		.style("fill", function(d, i) { return colors[i]; });
-		
+
 	/*r.on("mouseover", function(){
 			d3.select(this)
 			  .style("fill", "orange");
@@ -235,13 +227,11 @@ function plotLegend(svg, colors, height){
 		.attr("width", legendElementWidth)
 		.attr("x", function(d, i) { return legendElementWidth * i; })
 		.attr("y", -margin.top + (2*legendElementWidth)/3);
-		
+
 	legend.append("text")
 		.attr("class", "mono")
 		.text("= log_10(Taxa Relative Abundance)")
 		.attr("x", legendElementWidth * buckets)
 		.attr("y", -margin.top + (2*legendElementWidth)/3);
-	
+
 }
-
-
