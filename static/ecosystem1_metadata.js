@@ -157,6 +157,12 @@ class PieChart extends Chart {
 		this.arcLabel = d3.arc()
 		.innerRadius(this.labelRadius)
 		.outerRadius(this.labelRadius);
+
+		// Create tooltip element
+		this.tooltip = d3.select("body")
+			.append("div")
+			.attr("class", "tooltip")
+			.text("");
 	}
 
 	createGraphics() {
@@ -175,7 +181,23 @@ class PieChart extends Chart {
 			.append("path")
 			.attr("fill", (d, i) => this.scaleColor(i))
 			.attr("d", this.arc)
-			.each((d) => { this._newAngle = d; });
+			.each((d) => { this._newAngle = d; })
+			.on("mouseover", (d, i) => {
+				this.tooltip.html(
+					"<p><span id='value'>" +
+					categories[i] + ": " + values[i] +
+					"</p>"
+				);
+				this.tooltip.classed("visible", true);
+			})
+			.on("mousemove", () => {
+				this.tooltip
+					.style("top", (d3.event.pageY + 15) + "px")
+					.style("left", (d3.event.pageX + 15) + "px");
+			})
+			.on("mouseout", (d) => {
+				this.tooltip.classed("visible", false);
+			});
 
 		// Update existing arcs
 		this.circle.datum(values)

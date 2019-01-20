@@ -23,19 +23,20 @@ function orderTaxa(keys,help_array){
 	var new_array=[];
 	var col_val=document.getElementById("COLS").value.split(";");
 
-	col_val.forEach(function(elem){
-    if (elem === "all"){
+	if (col_val == "all"){
       return keys;
     }
-    else if (elem.indexOf('-') > -1)
+
+	col_val.forEach(function(elem){
+    if (elem.indexOf('-') > -1)
       {
         var range = elem.split("-")
         for(var i = +range[0]; i <= +range[1]; i++){
-          new_array.push(help_array[i]);
+          if(1<=i&&i<=130){new_array.push(help_array[i]);}
         }
       }
     else {
-      new_array.push(help_array[elem]);
+      if(1<=elem&&elem<=130){new_array.push(help_array[elem]);}
     }
   })
 
@@ -109,7 +110,7 @@ function heatmapChart() {
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
-					.attr("transform", "translate(" + gridSize / 2 + ", -6) rotate(-90)");
+					.attr("transform", "translate(8, -8) rotate(-90)");
 
 
 			cards = svg.selectAll(".sample")
