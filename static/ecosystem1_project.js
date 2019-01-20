@@ -2,7 +2,7 @@
 
 $( document ).ready(function() {
     
-    
+    //checks what page is active and sets the menu item accordingly
     if (window.location.href == "http://127.0.0.1:5000/project") {
         
         $("#proj").addClass("active")
@@ -21,7 +21,8 @@ $( document ).ready(function() {
     } else {}
     
     
-    $("a").on("click", function(){
+  //selection of menu item 
+  $("a").on("click", function(){
         console.log(window.location.href);
   $(".nav").find(".active").removeClass("active");
   $(this).parent().addClass("active");
