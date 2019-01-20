@@ -106,7 +106,6 @@ function heatmapChart() {
 				.style("text-anchor", "end")
 				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
 
-			console.log("ddddd", data);
 			//drawing heatmap rectangles
 			taxa.forEach(function(item, taxon) {
 				cards.enter().append("rect")
