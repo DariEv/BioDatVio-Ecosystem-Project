@@ -105,9 +105,10 @@ function filter_wrapper(filter_obj,meta_switch){
   var filtered_objects = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
 
   //console.log("filtered:", filtered_objects);
-
-  filtered_objects = filtered_objects.sort(sort_by(sort_val))
-
+  if(!meta_switch === "pcoa"){
+    filtered_objects = filtered_objects.sort(sort_by(sort_val))
+  }
+  
   var bool_array = generate_bool_array(keep_cols)
 
   var filter_sampleIDs = []
