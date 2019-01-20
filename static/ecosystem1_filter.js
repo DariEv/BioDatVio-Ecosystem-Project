@@ -154,10 +154,12 @@ generated object in conjuction with the wrapper function.
 function filter_object(data,pcoa_switch){
   var returnDictionary = {};
 
+  //debugging command
   returnDictionary["select_category"] = function(selector){
     console.log(data["metadataOverview"][selector])
     }
-
+  // given a metadata category and a fitting criterion generate a list of IDs
+  // which fits to the given filter criterions
   returnDictionary["generic_filter"] = function(category,filter_criterion){
     filtered_samples = []
     switch (category) {
@@ -194,6 +196,8 @@ function filter_object(data,pcoa_switch){
       }
     return filtered_samples
     }
+  //calculate the intersection of all Id-lists which are contained in the
+  // id-array
   returnDictionary["intersection"] = function(id_array){
     var internal_array = id_array
     while(internal_array.length > 1){
@@ -204,7 +208,13 @@ function filter_object(data,pcoa_switch){
     return internal_array[0]
 
   }
+  // as the data-structur is different for the PCoA to different functions
+  // are used for the dataset Filtering
+
   if(pcoa_switch){
+
+    //generates an object which contains the filtered dataset for use with the
+    // pcoa functions
     returnDictionary["filter_data"] = function(sample_ids){
       var sample_ids = sample_ids;
       var data_internal = data["dataExploration"];
@@ -223,7 +233,9 @@ function filter_object(data,pcoa_switch){
       }
   }
 
-  else{returnDictionary["filter_data"] = function(sample_ids,bool_arr){
+  else{
+    // returns the dataExploration dataset filtered for the sample_ids
+    returnDictionary["filter_data"] = function(sample_ids,bool_arr){
     var sample_ids = sample_ids;
     var data_internal = data["dataExploration"];
     var out_array = []
@@ -239,8 +251,10 @@ function filter_object(data,pcoa_switch){
     })
 
     return out_array
-    }}
+    }
+  }
 
+  // returns the metadataOverview dataset filtered for the sampleIds
   returnDictionary["filter_metadata"] = function(sample_ids){
     var sample_ids = sample_ids;
     var out_array = data["metadataOverview"];
