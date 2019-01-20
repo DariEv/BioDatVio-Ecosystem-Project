@@ -1,5 +1,11 @@
 /* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
 
+
+/*
+HELPER FUNCTIONS
+*/
+
+
 function generate_bool_array(html_string){
   var split_string = html_string.split(";")
   var bool_array = Array(1000).fill(false)
@@ -39,6 +45,16 @@ function filter_from_object(obj, bool_array){
   //console.log(out_obj)
   return out_obj
 }
+
+function sort_by(sort_criterion){
+  return function(x,y){
+    return (x[sort_criterion] < y[sort_criterion]) ? -1 : (x[sort_criterion] > y[sort_criterion]) ? 1 : 0;
+  }
+}
+
+/*
+WRAPPER FUNCTION
+*/
 
 function filter_wrapper(filter_obj,meta_switch){
   var age_from_val = +document.getElementById("FROM").value;
@@ -92,13 +108,12 @@ function filter_wrapper(filter_obj,meta_switch){
   }
 
 }
-function sort_by(sort_criterion){
-  return function(x,y){
-    return (x[sort_criterion] < y[sort_criterion]) ? -1 : (x[sort_criterion] > y[sort_criterion]) ? 1 : 0;
-  }
-}
 
-function filter_object(data){
+/*
+OBJECT FUNCTION
+*/
+
+function filter_object(data,pcoa_switch){
   var returnDictionary = {};
 
   returnDictionary["select_category"] = function(selector){
@@ -151,8 +166,26 @@ function filter_object(data){
     return internal_array[0]
 
   }
+  if(pcoa_switch){
+    returnDictionary["filter_data"] = function(sample_ids){
+      var sample_ids = sample_ids;
+      var data_internal = data["dataExploration"];
+      var object_internal = {"dataExploration":data["dataExploration"],
+                            "PCsPercentage":data["PCsPercentage"],
+                            "metadataOverview":data["metadataOverview"]};
+      var out_obj = {}
+      //out_array = out_array.filter(row => sample_ids.includes(row[""]))
 
-  returnDictionary["filter_data"] = function(sample_ids,bool_arr){
+      sample_ids.forEach(function(elem){
+        out_obj[elem] = data_internal[elem]
+          }
+        )
+      object_internal["dataExploration"] = out_obj
+      return object_internal
+      }
+  }
+
+  else{returnDictionary["filter_data"] = function(sample_ids,bool_arr){
     var sample_ids = sample_ids;
     var data_internal = data["dataExploration"];
     var out_array = []
@@ -168,87 +201,8 @@ function filter_object(data){
     })
 
     return out_array
-    }
-  returnDictionary["filter_metadata"] = function(sample_ids){
-    var sample_ids = sample_ids;
-    var out_array = data["metadataOverview"];
-    out_array = out_array.filter(row => sample_ids.includes(row["SampleID"]))
+    }}
 
-    return out_array
-    }
-  return returnDictionary
-  }
-
-
-
-function pcoa_filter_object(data){
-  var returnDictionary = {};
-
-  console.log("Test",data["dataExploration"])
-
-  returnDictionary["generic_filter"] = function(category,filter_criterion){
-    filtered_samples = []
-    switch (category) {
-
-      case "Age":
-      if(filter_criterion === "all"){
-        filtered_samples = data["metadataOverview"]
-      }
-      else{
-        for (i = 0; i < data["metadataOverview"].length; i++){
-          if(data["metadataOverview"][i][category] >= filter_criterion[0] && data["metadataOverview"][i][category] <= filter_criterion[1]){
-              filtered_samples.push(data["metadataOverview"][i])
-            }
-          }
-        }
-        break;
-
-      case "Sex":
-      case "Nationality":
-      case "BMI_group":
-      if(filter_criterion === "all"){
-        filtered_samples = data["metadataOverview"]
-      }
-      else{
-        for (i = 0; i < data["metadataOverview"].length; i++){
-          if(data["metadataOverview"][i][category] === filter_criterion){
-              filtered_samples.push(data["metadataOverview"][i])
-            }
-          }
-        }
-        break;
-      default:
-        console.log("ERROR WRONG CATEGORY")
-      }
-    return filtered_samples
-    }
-  returnDictionary["intersection"] = function(id_array){
-    var internal_array = id_array
-    while(internal_array.length > 1){
-      internal_array[internal_array.length-2] = internal_array[internal_array.length-1].filter(
-        a => internal_array[internal_array.length-2].some( b => a.SampleID === b.SampleID ) );
-      internal_array.pop()
-    }
-    return internal_array[0]
-
-  }
-
-  returnDictionary["filter_data"] = function(sample_ids){
-    var sample_ids = sample_ids;
-    var data_internal = data["dataExploration"];
-    var object_internal = {"dataExploration":data["dataExploration"],
-                          "PCsPercentage":data["PCsPercentage"],
-                          "metadataOverview":data["metadataOverview"]};
-    var out_obj = {}
-    //out_array = out_array.filter(row => sample_ids.includes(row[""]))
-
-    sample_ids.forEach(function(elem){
-      out_obj[elem] = data_internal[elem]
-        }
-      )
-    object_internal["dataExploration"] = out_obj
-    return object_internal
-    }
   returnDictionary["filter_metadata"] = function(sample_ids){
     var sample_ids = sample_ids;
     var out_array = data["metadataOverview"];
