@@ -1,7 +1,7 @@
 /* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
 
 
-// from colorbrewer
+// Set-up colors maps from colorbrewer for each metadata value
 var colorMap = {
 	
 	Age: {1:"#ffffcc",
@@ -10,9 +10,9 @@ var colorMap = {
 			4:"#41b6c4",
 			5:"#1d91c0",
 			6:"#225ea8",
-			7:"#0c2c84"}, // from 18 to 77: 7-class YlGnBu
+			7:"#0c2c84"}, // age from 18 y.o. to 77 y.o. : 7-class YlGnBu, sequential 
 			
-	Sex: {female:"#ef8a62", male:"#67a9cf"},  // 3-class RdBu, diverging 
+	Sex: {female:"#ef8a62", male:"#67a9cf"},  // 3-class RdBu, diverging (colors 1 and 3)
 	
 	Nationality: {		
 		CentralEurope:"#8dd3c7",
@@ -27,7 +27,8 @@ var colorMap = {
 				overweight:"#7fcdbb",
 				obese:"#41b6c4",
 				severeobese:"#2c7fb8",
-				morbidobese:"#253494"} // 6 groups: 6-class YlGnBu
+				morbidobese:"#253494"} // 6 groups: 6-class YlGnBu, sequential
+				
 };
 
 
@@ -35,24 +36,27 @@ var colorMap = {
 var margin = {top: 100, right: 20, bottom: 60, left: 60};
 var width = 930 - margin.left - margin.right;
 var height = 550 - margin.top - margin.bottom;
-var legendElementWidth=100; //todo: update for different data, depending on buckets number?
+var legendElementWidth=100;
 var legendElementHeights=20;
 
 
 function plotPCoA(){ 
 
 	returnDictionary = {};
+	
+	// intial plotting
 	returnDictionary["init"] = function(data){
 		plotFromData(data, "Age");		
 	};
 	
-	
+	// update plot after using filter
 	returnDictionary['update']=function(filtered_data){		
 		//console.log("PCoA filtred", filtered_data)
 		d3.select("svg").remove();
 		plotFromData(filtered_data, document.getElementById("btn_sortby").value);
 	};
 	
+	// update plot after changing color map
 	returnDictionary['updateColors']=function(data, colorKey){
 		d3.select("svg").remove();		
 		plotFromData(data, colorKey);
@@ -76,7 +80,7 @@ function plotFromData(data, colorKey){
 	//console.log("meta:", Object.keys(metadata));
 	//console.log("meta:", Object.keys(pcaValues));
 
-	// Cast my values as numbers and determine ranges.
+	// Cast values as numbers and determine ranges.
 	var minmax = {p1: {min:0, max:0}, p2: {min:0, max:0}}
 	Object.keys(pcaValues).forEach(function(k) {
 		pcaValues[k].p1 = +pcaValues[k].p1;
@@ -87,46 +91,45 @@ function plotFromData(data, colorKey){
 		minmax.p2.max = Math.max(pcaValues[k].p2, minmax.p2.max);
 	});
 	
-	// Actually create my canvas.
+	// create canvas.
 	var svg = d3.select("#chart").append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	// Set-up my x scale.
+	// Set-up x scale.
 	var xScale = d3.scaleLinear()
 		.range([0, width])
-		//.domain([Math.floor(minmax.p1.min), Math.ceil(minmax.p1.max)]);
 		.domain([minmax.p1.min, Math.ceil(minmax.p1.max)]);
 
-	// Set-up my y scale.
+	// Set-up y scale.
 	var yScale = d3.scaleLinear()
 		.range([height, 0])
-		//.domain([Math.floor(minmax.p2.min), Math.ceil(minmax.p2.max)]);
 		.domain([minmax.p2.min, Math.ceil(minmax.p2.max)]);
 
-	// Create my x-axis using my scale.
+	// Create x-axis.
 	var xAxis = d3.axisBottom()
 		.scale(xScale);
 
-	// Create my y-axis using my scale.
+	// Create y-axis.
 	var yAxis = d3.axisLeft()
 		.scale(yScale);
-		
-	//var xAxisSeparation = 
-	//var yAxisSeparation = (minmax.p2.max-minmax.p2.min)
 
-	// Draw my x-axis.
+	// Draw x-axis.
 	svg.append("g")
 		.attr("class", "x axis")
 		.attr("transform", "translate(0," + yScale(minmax.p2.min) + ")")
+		.transition()
+		.duration(1000)
 		.call(xAxis);				
 
-	// Draw my y-axis.
+	// Draw y-axis.
 	svg.append("g")
 		.attr("class", "y axis")
 		.attr("transform", "translate(" + xScale(minmax.p1.min) + ",0)")
+		.transition()
+		.duration(1000)
 		.call(yAxis);
 			
 	// text label for the x axis
@@ -144,13 +147,14 @@ function plotFromData(data, colorKey){
 		.style("text-anchor", "middle")
 		.text(PCsPercentage[1]); 
 	
-	// Set-up my colours/groups.
+	// default color map
 	if (colorKey == "")
 		colorKey = "Age";
 	
-	var colors = colorMap[colorKey];
-	
+	// Set-up colours/groups.
+	var colors = colorMap[colorKey];	
 	var groups = {};
+	
 	metadata.forEach(function(d, i) {
 		if (colorKey == "Age")
 			groups[i] = Math.floor(d[colorKey]/10);
@@ -165,11 +169,10 @@ function plotFromData(data, colorKey){
 	var circles = svg.selectAll("circle")
 		.data(Object.values(pcaValues))
 		.enter().append("circle")
-		.attr("r", 3.5)
+		.attr("r", 4)
 		.attr("cx", function(d) { return xScale(d.p1); })
 		.attr("cy", function(d) { return yScale(d.p2); })
-		.style("stroke", function(d, i) { return colors[groups[i]]; })
-		.style("fill", function(d, i) { return colors[groups[i]]; })
+		.style("stroke", function(d, i) { return "gray"; })
 		.on("mouseover", function(d, i){				
 			//Update the tooltip position and value
 			d3.select("#tooltip")
@@ -185,10 +188,14 @@ function plotFromData(data, colorKey){
 			d3.select("#tooltip").classed("hidden", false);
 		})
 		.on("mouseout", function(){
-			//d3.select(this).classed("cell-hover",false);			
+			// hide tooltip
 			d3.select("#tooltip").classed("hidden", true);
 		})
 		;
+		
+	circles.transition()
+		.duration(300)
+			.style("fill", function(d, i) { return colors[groups[i]]; });
 	
 	// legend
 	plotLegend(svg, colors, colorKey, height);
@@ -198,7 +205,8 @@ function plotFromData(data, colorKey){
 
 function plotLegend(svg, colors, type, height){
 	
-	legendCells = Array.apply(null, {length: Object.keys(colors).length}).map(Number.call, Number); // array from 0 to nubmer of colors
+	// array from 0 to nubmer of colors
+	legendCells = Array.apply(null, {length: Object.keys(colors).length}).map(Number.call, Number); 
 	colorKeys = Object.keys(colors);
 	
 	//console.log(colorKeys);
@@ -208,8 +216,9 @@ function plotLegend(svg, colors, type, height){
 		.enter().append("g")
 		.attr("class", "legend");
 
+	// draw color rectangulars
 	legend.append("rect")	
-	.transition()
+		.transition()
 		.duration(1000)
 		.attr("x", function(d, i) { return legendElementWidth * i; })
 		.attr("y", -margin.top + (legendElementWidth)/3)
@@ -218,6 +227,7 @@ function plotLegend(svg, colors, type, height){
 		.attr('pointer-events', 'all')
 		.style("fill", function(d, i) {return colors[colorKeys[i]]; });
 
+	// labels
 	legend.append("text")
 	.transition()
 		.duration(1000)
