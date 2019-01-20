@@ -146,7 +146,7 @@ function filter_wrapper(filter_obj,meta_switch){
 
 /*
 OBJECT FUNCTION
-Input: object, boolea
+Input: object, boolean
 Output: Array or OBJECT
 
 Constructor function for the filter object.
@@ -244,7 +244,7 @@ function filter_object(data,pcoa_switch){
     var sample_ids = sample_ids;
     var data_internal = data["dataExploration"];
     var out_array = []
-    //out_array = out_array.filter(row => sample_ids.includes(row[""]))
+  
 
     sample_ids.forEach(function(elem){
       for(var i = 0; i < data_internal.length; i++){
