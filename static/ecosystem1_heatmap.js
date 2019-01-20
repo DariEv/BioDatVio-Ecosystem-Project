@@ -142,7 +142,7 @@ function heatmapChart() {
 				  .data(taxa)
 				  .enter().append("text")
 				  	.attr("class","taxaLabels")
-					.text(function(d) { return d; })
+					.text(function(d) { return +i+1 +": "+ d; })
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
