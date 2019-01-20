@@ -23,12 +23,12 @@ function orderTaxa(keys,help_array){
 	var new_array=[];
 	var col_val=document.getElementById("COLS").value.split(";");
 
-	col_val.forEach(function(elem){
-    if (elem == "all"){
-    	console.log(keys);
+	if (col_val == "all"){
       return keys;
     }
-    else if (elem.indexOf('-') > -1)
+
+	col_val.forEach(function(elem){
+    if (elem.indexOf('-') > -1)
       {
         var range = elem.split("-")
         for(var i = +range[0]; i <= +range[1]; i++){
