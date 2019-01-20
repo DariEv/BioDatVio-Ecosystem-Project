@@ -112,7 +112,7 @@ function heatmapChart() {
 					.style("left", (d3.event.pageX) + "px")
 					.style("top", (d3.event.pageY) - 60 + "px")
 					.select("#value")
-					.text("Sample: "+metadata_labels[i].SampleID+
+					.text(metadata_labels[i].SampleID+
 						"; Age: "+metadata_labels[i].Age+
 						"; Sex: "+metadata_labels[i].Sex+
 						"; Nationality: "+metadata_labels[i].Nationality+
@@ -206,7 +206,7 @@ function heatmapChart() {
 					.style("left", (d3.event.pageX) + "px")
 					.style("top", (d3.event.pageY) - 60 + "px")
 					.select("#value")
-					.text("Sample: "+filtered_meta_data[i].SampleID+
+					.text(filtered_meta_data[i].SampleID+
 						"; Age: "+filtered_meta_data[i].Age+
 						"; Sex: "+filtered_meta_data[i].Sex+
 						"; Nationality: "+filtered_meta_data[i].Nationality+

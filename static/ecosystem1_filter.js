@@ -264,7 +264,6 @@ function filter_object(data,pcoa_switch){
     var sample_ids = sample_ids;
     var metadata_internal = data["metadataOverview"];
     var out_array = []
-    //out_array = out_array.filter(row => sample_ids.includes(row["SampleID"]))
     sample_ids.forEach(function(elem){
       for(var i = 0; i < metadata_internal.length; i++){
         if(metadata_internal[i]["SampleID"] === elem){
