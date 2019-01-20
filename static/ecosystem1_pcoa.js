@@ -31,6 +31,14 @@ var colorMap = {
 };
 
 
+// Define the sizes and margins for our canvas.
+var margin = {top: 100, right: 20, bottom: 60, left: 60};
+var width = 930 - margin.left - margin.right;
+var height = 550 - margin.top - margin.bottom;
+var legendElementWidth=100; //todo: update for different data, depending on buckets number?
+var legendElementHeights=20;
+
+
 function plotPCoA(){ 
 
 	returnDictionary = {};
@@ -62,12 +70,6 @@ function plotFromData(data, colorKey){
 	var metadata = data["metadataOverview"];
 	
 	console.log("js", pcaValues["Sample-13"]);
-	
-
-	// Define the sizes and margins for our canvas.
-	var margin = {top: 20, right: 20, bottom: 60, left: 80},
-	width = 960 - margin.left - margin.right,
-	height = 500 - margin.top - margin.bottom;
 
 	// Cast my values as numbers and determine ranges.
 	var minmax = {p1: {min:0, max:0}, p2: {min:0, max:0}}
@@ -132,9 +134,13 @@ function plotFromData(data, colorKey){
 		.style("text-anchor", "middle")
 		.text(PCsPercentage[1]); 
 	
+	console.log("ggggg", colorKey);
 	// Set-up my colours/groups.
+	if (colorKey == "")
+		colorKey = "Age";
+	
 	var colors = colorMap[colorKey];
-	console.log(colors);
+	
 	var groups = {};
 		metadata.forEach(function(d, i) {
 			if (colorKey == "Age")
@@ -144,7 +150,6 @@ function plotFromData(data, colorKey){
 	});
 	console.log("coloring", colors[groups[0]]);
 	console.log("coloring", groups);
-	
 	
 	// Create all the data points
 	svg.selectAll("circle")
@@ -172,30 +177,39 @@ function plotFromData(data, colorKey){
 			d3.select("#tooltip").classed("hidden", true);
 		})
 		;
+	
+	// legend
+	plotLegend(svg, colors, colorKey, height);
+	
+}
 
-	// Create the container for the legend if it doesn't already exist.
-	/*var legend = svg.selectAll(".legend")
-	.data(color.domain())
-	.enter().append("g")
-	.attr("class", "legend")
-	.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-	// Draw the coloured rectangles for the legend.
-	/*legend.append("rect")
-	.attr("x", width - 18)
-	.attr("width", 18)
-	.attr("height", 18)
-	.style("fill", color);
+function plotLegend(svg, colors, type, height){
+	
+	legendCells = Array.apply(null, {length: Object.keys(colors).length}).map(Number.call, Number); // array from 0 to nubmer of colors
+	colorKeys = Object.keys(colors);
+	
+	console.log(colorKeys);
+	
+	var legend = svg.selectAll(".legend")
+		.data(legendCells)
+		.enter().append("g")
+		.attr("class", "legend");
 
-	// Draw the labels for the legend.
+	legend.append("rect")
+		.attr("x", function(d, i) { return legendElementWidth * i; })
+		.attr("y", -margin.top + (legendElementWidth)/3)
+		.attr("width", legendElementWidth)
+		.attr("height", legendElementHeights)
+		.attr('pointer-events', 'all')
+		.style("fill", function(d, i) {console.log(colors[colorKeys[i]]); return colors[colorKeys[i]]; });
+
 	legend.append("text")
-	.attr("x", width - 24)
-	.attr("y", 9)
-	.attr("dy", ".35em")
-	.style("text-anchor", "end")
-	.text(function(d) { return d; });*/
-
-	//});
-	//});
+		.attr("class", "mono")
+		.text(function(d, i) { if (type == "Age") return "from "+(colorKeys[i]*10)+" y.o.";
+								else return colorKeys[i]; })
+		.attr("width", legendElementWidth)
+		.attr("x", function(d, i) { return legendElementWidth * i; })
+		.attr("y", -margin.top + (2*legendElementWidth)/3);
 	
 }
