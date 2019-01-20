@@ -6,10 +6,10 @@ li:hover {
 }
 
 .active {
+    
   background-color: lightgray;
   color: white;
 }
-
 
 a {
     color: white;
@@ -25,7 +25,8 @@ body {
     padding-top: 70px; }
 
 #filter {
-
+  background-color:darkslategray; 
+  color: white;
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 50px;
