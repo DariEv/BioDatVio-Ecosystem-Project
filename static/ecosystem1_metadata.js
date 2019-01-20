@@ -58,7 +58,31 @@ class Chart {
 		this.height = height ? height : 500;
 
 		// Setting color encoding
-		this.scaleColor = d3.scaleOrdinal(d3.schemeSet2);
+		this.colorMap = {
+			Sex: {
+				female: "#ef8a62",
+				male: "#67a9cf",
+				NA: "#aaa"
+			},
+			Nationality: {
+				CentralEurope: "#8dd3c7",
+				Scandinavia: "#ffffb3",
+				SouthEurope: "#bebada",
+				UKIE: "#fb8072",
+				US: "#80b1d3",
+				EasternEurope: "#fdb462",
+				NA: "#aaa"
+			},
+			BMI_group: {
+				underweight: "#ffffcc",
+				lean: "#c7e9b4",
+				overweight: "#7fcdbb",
+				obese: "#41b6c4",
+				severeobese: "#2c7fb8",
+				morbidobese: "#253494",
+				NA: "#aaa"
+			}
+		}
 
 		// In case internal margin is needed
 		this.margin = {top: 0, right: 0, bottom: 0, left: 0};
@@ -81,6 +105,10 @@ class Chart {
 
 		// Get the data from selection
 		this.data = selection.datum();
+	}
+
+	set colorFor(key) {
+		this.scaleColor = this.colorMap[key];
 	}
 
 	createLayout() {
@@ -186,7 +214,7 @@ class PieChart extends Chart {
 			.data(this.pie)
 			.enter()
 			.append("path")
-			.attr("fill", (d, i) => this.scaleColor(i))
+			.attr("fill", (d, i) => _this.scaleColor[_this.categories[i]])
 			.attr("d", this.arc)
 			.each((d) => this._newAngle = d)
 			.on("mouseover", (d, i) => {

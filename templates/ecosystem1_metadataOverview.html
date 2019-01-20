@@ -40,6 +40,7 @@
 			sexChart.selectionElement = d3.select(".sex").datum(sexColumn);
 			sexChart.chartWidth = chartsWidth;
 			sexChart.chartHeight = chartsHeight;
+			sexChart.colorFor = "Sex";
 			sexChart.show();
 
 			// Nationality histogram
@@ -58,6 +59,7 @@
 			BMIChart.selectionElement = d3.select(".bmi").datum(BMIColumn);
 			BMIChart.chartWidth = chartsWidth;
 			BMIChart.chartHeight = chartsHeight;
+			BMIChart.colorFor = "BMI_group";
 			BMIChart.show();
 
 			document.querySelector('#AGE').addEventListener('click', function(){
