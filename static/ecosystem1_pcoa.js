@@ -45,7 +45,10 @@ function plotPCoA(){
 	returnDictionary = {};
 	
 	// intial plotting
-	returnDictionary["init"] = function(data){
+	returnDictionary["init"] = function(data){		
+		document.getElementById("unnorm").innerHTML = data['unnormalizedPCA'];
+		document.getElementById("norm").innerHTML = data['normalizedPCA'];
+		
 		plotFromData(data, "Age");		
 	};
 	

@@ -9,6 +9,7 @@ import random
 import math
 import csv
 import pandas as pd
+import numpy as np
 
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
@@ -56,6 +57,32 @@ def calculatePCoAFromData():
 	data['dataExploration'] = out.to_dict()
 	data['PCsPercentage'] = ["PC"+str(i+1)+", "+str(round(PCsPercentage[i]*100, 1))+"%"  for i in range(len(PCsPercentage))]
 	
+	
+	### Features sorting ###
+	pcaSort = PCA(n_components=50)
+	
+	# not normalized
+	unnormalizedPCA = pcaSort.fit_transform(df.drop(['Unnamed: 0'], axis=1))
+	weights = (pd.DataFrame(pcaSort.components_,columns=data_scaled.columns)).transpose()
+	weights= np.absolute(weights)
+	sort = pd.DataFrame.idxmax(weights).values
+	s = ""
+	for el in sort:
+		s = s + str(list(data_scaled.columns.values).index(el)+1) +";"
+	data['unnormalizedPCA'] = s
+	
+	# normalized
+	normalizedPCA = pcaSort.fit_transform(data_scaled)
+	weights = (pd.DataFrame(pcaSort.components_,columns=data_scaled.columns)).transpose()
+	weights= np.absolute(weights)
+	sort = pd.DataFrame.idxmax(weights).values
+	s = ""
+	for el in sort:
+		s = s + str(list(data_scaled.columns.values).index(el)+1) +";"
+	data['normalizedPCA'] = s
+	
+	
+	### Metadata ### 
 	metadataOverview=open('ecosystem_Metadatatsv.sec', newline='')
 	data['metadataOverview']=list(csv.DictReader(metadataOverview, delimiter='\t'))
 	metadataOverview.close()
