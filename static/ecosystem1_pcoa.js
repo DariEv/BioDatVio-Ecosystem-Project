@@ -48,7 +48,7 @@ function plotPCoA(){
 	
 	
 	returnDictionary['update']=function(filtered_data){		
-		console.log("PCoA filtred", filtered_data)
+		//console.log("PCoA filtred", filtered_data)
 		d3.select("svg").remove();
 		plotFromData(filtered_data, document.getElementById("btn_sortby").value);
 	};
@@ -65,16 +65,16 @@ function plotPCoA(){
 
 function plotFromData(data, colorKey){
 	
-	console.log("js", data);
+	//console.log("js", data);
 	
 	var pcaValues = data["dataExploration"];
 	var PCsPercentage = data["PCsPercentage"];
 	var metadata = data["metadataOverview"];
 	
-	console.log("js", pcaValues["Sample-13"]);
-	console.log("meta:", metadata);
-	console.log("meta:", Object.keys(metadata));
-	console.log("meta:", Object.keys(pcaValues));
+	//console.log("js", pcaValues["Sample-13"]);
+	//console.log("meta:", metadata);
+	//console.log("meta:", Object.keys(metadata));
+	//console.log("meta:", Object.keys(pcaValues));
 
 	// Cast my values as numbers and determine ranges.
 	var minmax = {p1: {min:0, max:0}, p2: {min:0, max:0}}
@@ -97,12 +97,14 @@ function plotFromData(data, colorKey){
 	// Set-up my x scale.
 	var xScale = d3.scaleLinear()
 		.range([0, width])
-		.domain([Math.floor(minmax.p1.min), Math.ceil(minmax.p1.max)]);
+		//.domain([Math.floor(minmax.p1.min), Math.ceil(minmax.p1.max)]);
+		.domain([minmax.p1.min, Math.ceil(minmax.p1.max)]);
 
 	// Set-up my y scale.
 	var yScale = d3.scaleLinear()
 		.range([height, 0])
-		.domain([Math.floor(minmax.p2.min), Math.ceil(minmax.p2.max)]);
+		//.domain([Math.floor(minmax.p2.min), Math.ceil(minmax.p2.max)]);
+		.domain([minmax.p2.min, Math.ceil(minmax.p2.max)]);
 
 	// Create my x-axis using my scale.
 	var xAxis = d3.axisBottom()
@@ -111,6 +113,9 @@ function plotFromData(data, colorKey){
 	// Create my y-axis using my scale.
 	var yAxis = d3.axisLeft()
 		.scale(yScale);
+		
+	//var xAxisSeparation = 
+	//var yAxisSeparation = (minmax.p2.max-minmax.p2.min)
 
 	// Draw my x-axis.
 	svg.append("g")
@@ -126,7 +131,7 @@ function plotFromData(data, colorKey){
 			
 	// text label for the x axis
 	svg.append("text")             
-		.attr("transform", "translate(" + (width/2) + "," + (height + margin.top + margin.bottom/2) + ")")
+		.attr("transform", "translate(" + (width/2) + "," + (height + margin.top/2) + ")")
 		.style("text-anchor", "middle")
 		.text(PCsPercentage[0]);
 
@@ -153,17 +158,16 @@ function plotFromData(data, colorKey){
 			groups[i] = d[colorKey];
 	});
 	
-	console.log("coloring", colors[groups[0]]);
-	console.log("coloring", groups);
+	//console.log("coloring", colors[groups[0]]);
+	//console.log("coloring", groups);
 	
 	// Create all the data points
-	svg.selectAll("circle")
+	var circles = svg.selectAll("circle")
 		.data(Object.values(pcaValues))
 		.enter().append("circle")
 		.attr("r", 3.5)
 		.attr("cx", function(d) { return xScale(d.p1); })
 		.attr("cy", function(d) { return yScale(d.p2); })
-		//.style("fill", function(d) { return "black"; });
 		.style("stroke", function(d, i) { return colors[groups[i]]; })
 		.style("fill", function(d, i) { return colors[groups[i]]; })
 		.on("mouseover", function(d, i){				
@@ -197,7 +201,7 @@ function plotLegend(svg, colors, type, height){
 	legendCells = Array.apply(null, {length: Object.keys(colors).length}).map(Number.call, Number); // array from 0 to nubmer of colors
 	colorKeys = Object.keys(colors);
 	
-	console.log(colorKeys);
+	//console.log(colorKeys);
 	
 	var legend = svg.selectAll(".legend")
 		.data(legendCells)
@@ -212,7 +216,7 @@ function plotLegend(svg, colors, type, height){
 		.attr("width", legendElementWidth)
 		.attr("height", legendElementHeights)
 		.attr('pointer-events', 'all')
-		.style("fill", function(d, i) {console.log(colors[colorKeys[i]]); return colors[colorKeys[i]]; });
+		.style("fill", function(d, i) {return colors[colorKeys[i]]; });
 
 	legend.append("text")
 	.transition()
