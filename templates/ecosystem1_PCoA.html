@@ -56,6 +56,9 @@
 			console.log("html", dataset);
 
 			window.onload = function() {
+				//hiding column filter
+				document.getElementById("colfilter_div").style.display="none";
+
 				//PCoA plot initialisation
 				myPlot = plotPCoA();
 				myPlot.init(dataset);
