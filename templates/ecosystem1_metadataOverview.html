@@ -15,6 +15,10 @@
 			let chartsWidth = 380;
 			let chartsHeight = chartsWidth;
 
+			//hides buttons
+			document.getElementById("sortby_div").style.display="none";
+			document.getElementById("colfilter_div").style.display="none";
+
 			// Arrange metadata values
 			let columns = groupByColumn(dataset["metadataOverview"]);
 			let ageColumn = columns["Age"].values;
