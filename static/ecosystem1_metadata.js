@@ -59,6 +59,16 @@ class Chart {
 
 		// Setting color encoding
 		this.colorMap = {
+			Age: {
+				1: "#ffffcc",
+				2: "#c7e9b4",
+				3: "#7fcdbb",
+				4: "#41b6c4",
+				5: "#1d91c0",
+				6: "#225ea8",
+				7: "#0c2c84",
+				NA: "#aaa"
+			},
 			Sex: {
 				female: "#ef8a62",
 				male: "#67a9cf",
@@ -391,7 +401,16 @@ class BarChart extends Chart {
 			.attr("width", _this.xScale.bandwidth())
 			.attr("height", function(d, i) { return _this.scaleBarHeight(d); })
 			.attr("y", function(d) { return _this.height - _this.scaleBarHeight(d); })
-			.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); });
+			.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); })
+			.attr("fill", (d, i) => {
+				let value = _this.xLabels[i];
+
+				if ($.isNumeric(value)) {
+					value = Math.floor(value / 10);
+				}
+
+				return _this.scaleColor[value]
+			});
 		};
 
 		// Construct bars
