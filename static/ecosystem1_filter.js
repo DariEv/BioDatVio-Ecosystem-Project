@@ -126,6 +126,8 @@ function filter_wrapper(filter_obj,meta_switch){
       break;
     case "pcoa":
       var filtered_data = filter_obj.filter_data(filter_sampleIDs)
+      var filtered_meta_data = filter_obj.filter_metadata(filter_sampleIDs)
+      filtered_data["metadataOverview"] = filtered_meta_data
       return filtered_data
       break;
     default:
