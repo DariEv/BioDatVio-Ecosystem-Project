@@ -84,31 +84,35 @@ dataset (also depending on use-case) containing only the filterd samples.
 */
 
 function filter_wrapper(filter_obj,meta_switch){
+
+  // fetch filter inputs from the html user interface
   var age_from_val = +document.getElementById("FROM").value;
   var age_to_val = +document.getElementById("TO").value;
   var sex_val = document.getElementById("btn_sex").value;
   var nationality_val = document.getElementById("btn_nationality").value;
   var bmi_val = document.getElementById("btn_bmi").value;
 
+  //fetch sort order from html user interface
   var sort_val = document.getElementById("btn_sortby").value;
 
+  //fetch column sort string from hrml user interface
   var keep_cols = document.getElementById("COLS").value;
 
+  //calculte the SampleID-lists from the fetched filteres
   var age_filter = filter_obj.generic_filter("Age",[age_from_val,age_to_val])
   var sex_filter = filter_obj.generic_filter("Sex",sex_val)
   var nationality_filter = filter_obj.generic_filter("Nationality",nationality_val)
   var bmi_filter = filter_obj.generic_filter("BMI_group",bmi_val)
-  //console.log(age_filter)
-  //console.log(sex_filter)
-  //console.log(nationality_filter)
-  //console.log(bmi_filter)
+
+  //calculate intersection of the previously generated SampleID lists
   var filtered_objects = filter_obj.intersection([age_filter,sex_filter,nationality_filter,bmi_filter])
 
-  //console.log("filtered:", filtered_objects);
+  //sort the samples by the fetched sort logic (only if not in PCoA mode)
   if(!(meta_switch === "pcoa")){
     filtered_objects = filtered_objects.sort(sort_by(sort_val))
   }
 
+  //generate Array for filtering of columns
   var bool_array = generate_bool_array(keep_cols)
 
   var filter_sampleIDs = []
@@ -116,6 +120,7 @@ function filter_wrapper(filter_obj,meta_switch){
     filter_sampleIDs.push(elem.SampleID)
   })
 
+  //depending on the use case calculate the final dataset
   switch (meta_switch) {
     case "Data":
       var filtered_data = filter_obj.filter_data(filter_sampleIDs,bool_array)
@@ -141,7 +146,7 @@ function filter_wrapper(filter_obj,meta_switch){
 
 /*
 OBJECT FUNCTION
-Input: object, boolea
+Input: object, boolean
 Output: Array or OBJECT
 
 Constructor function for the filter object.
@@ -239,7 +244,7 @@ function filter_object(data,pcoa_switch){
     var sample_ids = sample_ids;
     var data_internal = data["dataExploration"];
     var out_array = []
-    //out_array = out_array.filter(row => sample_ids.includes(row[""]))
+  
 
     sample_ids.forEach(function(elem){
       for(var i = 0; i < data_internal.length; i++){
