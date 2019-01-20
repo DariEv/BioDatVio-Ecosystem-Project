@@ -172,7 +172,11 @@ function plotFromData(data, colorKey){
 			.style("left", (d3.event.pageX) + "px")
 			.style("top", (d3.event.pageY) - 60 + "px")
 			.select("#value")
-			.text("Sample: "+i+"; Group: "+groups[i]);  
+			.text("Sample: "+i+
+				"; Age: "+metadata[i].Age+
+				"; Sex: "+metadata[i].Sex+
+				"; Nationality: "+metadata[i].Nationality+
+				"; BMI_group: "+metadata[i].BMI_group);  
 			//Show the tooltip
 			d3.select("#tooltip").classed("hidden", false);
 		})
