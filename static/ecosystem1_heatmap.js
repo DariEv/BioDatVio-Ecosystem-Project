@@ -109,7 +109,7 @@ function heatmapChart() {
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
-					.attr("transform", "translate(" + gridSize / 2 + ", -6) rotate(-90)");
+					.attr("transform", "translate(8, -8) rotate(-90)");
 
 
 			cards = svg.selectAll(".sample")
