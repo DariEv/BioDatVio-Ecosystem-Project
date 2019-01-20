@@ -70,9 +70,14 @@ let performFilter = function() {
 		buttonID = "#btn_nationality";
 	}
 
-	// Change displayed text
-	$(buttonID).attr("value", new_value)
-	$(buttonID).html(new_value + " <span class='caret'></span>");
+	if ($parent.hasClass("age")) {
+		$("#TO").attr("value", new_value);
+		$("#TO").val(new_value);
+	} else {
+		// Change displayed text
+		$(buttonID).attr("value", new_value)
+		$(buttonID).html(new_value + " <span class='caret'></span>");
+	}
 
 	filterCharts();
 }
