@@ -98,6 +98,7 @@
 
 .pie .label {
 	font-size: 85%;
+	pointer-events: none;
 }
 
 .pie .values {
