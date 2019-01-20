@@ -60,6 +60,11 @@
 			BMIChart.chartHeight = chartsHeight;
 			BMIChart.show();
 
+			document.querySelector('#AGE').addEventListener('click', function(){
+				columns = groupByColumn(filter_wrapper(filter, "Meta"))
+
+				ageChart.update(columns["Age"].values);
+				});
 			// Attach listener for data filtering
 			$("form ul").on("click", function() {
 				columns = groupByColumn(filter_wrapper(filter, "Meta"))

@@ -94,6 +94,12 @@ class Chart {
 					"transform",
 					"translate(" + this.margin.left + "," + this.margin.top + ")"
 				);
+
+		// Create tooltip element
+		this.tooltip = d3.select("body")
+			.append("div")
+			.attr("class", "tooltip")
+			.text("");
 	}
 
 	show() {
@@ -149,7 +155,7 @@ class PieChart extends Chart {
 			);
 
 		// Build arcs
-		this.pie = d3.pie();
+		this.pie = d3.pie().sort(null);
 
 		this.arc = d3.arc().innerRadius(0).outerRadius(this.radius);
 
@@ -157,12 +163,6 @@ class PieChart extends Chart {
 		this.arcLabel = d3.arc()
 		.innerRadius(this.labelRadius)
 		.outerRadius(this.labelRadius);
-
-		// Create tooltip element
-		this.tooltip = d3.select("body")
-			.append("div")
-			.attr("class", "tooltip")
-			.text("");
 	}
 
 	createGraphics() {
@@ -172,6 +172,12 @@ class PieChart extends Chart {
 		let counts = counter(this.data);
 		let categories = Object.keys(counts);
 		let values = Object.values(counts);
+
+		// Remove unused paths
+		this.circle.datum(values)
+			.selectAll("path")
+			.data(this.pie)
+			.exit().remove();
 
 		// Add new arcs
 		this.circle.datum(values)
@@ -185,7 +191,7 @@ class PieChart extends Chart {
 			.on("mouseover", (d, i) => {
 				this.tooltip.html(
 					"<p><span id='value'>" +
-					categories[i] + ": " + values[i] +
+					categories[i] + ": #" + d.data + " entries" +
 					"</p>"
 				);
 				this.tooltip.classed("visible", true);
@@ -212,12 +218,6 @@ class PieChart extends Chart {
 					return _this.arc(interpolate(t));
 				};
 			});
-
-		// Remove unused paths
-		this.circle.datum(values)
-			.selectAll("path")
-			.data(this.pie)
-			.exit().remove();
 
 		// Remove any exisintg labels
 		this.circle.selectAll("text.label").remove();
@@ -364,7 +364,7 @@ class BarChart extends Chart {
 			.attr("width", _this.xScale.bandwidth())
 			.attr("height", function(d, i) { return _this.scaleBarHeight(d); })
 			.attr("y", function(d) { return _this.height - _this.scaleBarHeight(d); })
-			.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); })
+			.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); });
 		};
 
 		// Construct bars
@@ -385,6 +385,22 @@ class BarChart extends Chart {
 			.attr("class", "bar")
 			.attr("height", _this.scaleBarHeight(0))
 			.attr("y", _this.height)
+			.on("mouseover", (d, i) => {
+				_this.tooltip.html(
+					"<p><span id='value'>" +
+					_this.xLabels[i] + ": #" + _this.data[i] + " entries" +
+					"</p>"
+				);
+				_this.tooltip.classed("visible", true);
+			})
+			.on("mousemove", () => {
+				_this.tooltip
+					.style("top", (d3.event.pageY + 15) + "px")
+					.style("left", (d3.event.pageX + 15) + "px");
+			})
+			.on("mouseout", (d) => {
+				_this.tooltip.classed("visible", false);
+			})
 			.call(drawBars);
 
 		// Update new bar position
