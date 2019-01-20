@@ -2,40 +2,40 @@
 
 // Function to group entries of object as columns of a table
 function groupByColumn(data) {
-  keys = Object.keys(data[0]);
-  let columns = {}
+	keys = Object.keys(data[0]);
+	let columns = {}
 
-  for (i = 0; i < data.length; i++) {
-    for (j in keys) {
-      let key = keys[j]
-      let value = data[i][key];
+	for (i = 0; i < data.length; i++) {
+		for (j in keys) {
+			let key = keys[j]
+			let value = data[i][key];
 
-      // Initializing column object
-      if (!columns[key]) {
-        columns[key] = {
-          name: key,
-          values: [],
-          types: []
-        };
-      }
+			// Initializing column object
+			if (!columns[key]) {
+				columns[key] = {
+					name: key,
+					values: [],
+					types: []
+				};
+			}
 
-      // Transforming to number
-      if ($.isNumeric(value)) {
-        value = parseFloat(value);
-      }
+			// Transforming to number
+			if ($.isNumeric(value)) {
+				value = parseFloat(value);
+			}
 
-      // Populating 'value' array
-      columns[key].values.push(value);
+			// Populating 'value' array
+			columns[key].values.push(value);
 
-      // Populating 'types' array
-      type = typeof(value);
-      if (!columns[key].types.includes(type)) {
-        columns[key].types.push(type);
-      }
-    }
-  }
+			// Populating 'types' array
+			type = typeof(value);
+			if (!columns[key].types.includes(type)) {
+				columns[key].types.push(type);
+			}
+		}
+	}
 
-  return columns;
+	return columns;
 }
 
 
@@ -43,7 +43,7 @@ function groupByColumn(data) {
 function counter(array) {
 	let counts = {};
 	array.forEach(element => {
-		counts[element] = counts[element] ? counts[element] + 1 : 1;
+			counts[element] = counts[element] ? counts[element] + 1 : 1;
 	})
 
 	return counts;
@@ -59,6 +59,9 @@ class Chart {
 
 		// Setting color encoding
 		this.scaleColor = d3.scaleOrdinal(d3.schemeSet2);
+
+		// In case internal margin is needed
+		this.margin = {top: 0, right: 0, bottom: 0, left: 0};
 	}
 
 	set chartWidth(width) {
@@ -80,12 +83,29 @@ class Chart {
 		this.data = selection.datum();
 	}
 
-	show() {
+	createLayout() {
+		// Create SVG element as container
 		this.svg = this.selection
 			.append("svg")
-			.attr("width", this.width)
-			.attr("height", this.height);
+			.attr("width", this.width + this.margin.left + this.margin.right)
+			.attr("height", this.height + this.margin.top + this.margin.bottom)
+			.append("g")
+				.attr(
+					"transform",
+					"translate(" + this.margin.left + "," + this.margin.top + ")"
+				);
+	}
 
+	show() {
+		this.width -= (this.margin.left + this.margin.right),
+		this.height -= (this.margin.top + this.margin.bottom);
+
+		this.createLayout();
+		this.createGraphics();
+	}
+
+	update(filtered_data) {
+		this.data = filtered_data;
 		this.createGraphics();
 	}
 }
@@ -94,75 +114,125 @@ class Chart {
 // Implementation of a Pie Chart
 class PieChart extends Chart {
 
-	createGraphics() {
-		// Aggregate data elements
-		let counts = counter(this.data);
-		let categories = Object.keys(counts);
-		let values = Object.values(counts);
+	constructor(width, height) {
+		super(width, height);
 
-		// Set radius for chart
-		let radius = Math.min(this.width, this.height) / 2;
+		this.radius = Math.min(this.width, this.height) / 2 - 50;
+		this.labelRadius = this.radius * 0.8;
+	}
 
-		// Build arcs
-		let arcs = d3.pie()(values);
+	// Different separations if labels are on one
+	// of the two sides of a pie chart
+	labelXSeparation(element) {
+		return (element.startAngle > Math.PI ? -1 : -2.5) + "em";
+	}
 
-		// Build single arc
-		let arc = d3.arc().innerRadius(0).outerRadius(radius);
+	// Only append label if there's enough space
+	showLabel(element, angle) {
+		return element.endAngle - element.startAngle > angle;
+	}
 
-		// Build arc label
-		let r = radius * 0.8;
-		let arcLabel = d3.arc().innerRadius(r).outerRadius(r);
+	drawArc(angle, self) {
+		let inter = d3.interpolate(this._newAngle, angle);
+		this._newAngle = inter(0);
 
-		// Append at center of svg
-		let g = this.svg.append("g")
+		return (t) => self.arc(inter(t));
+	}
+
+	createLayout() {
+		super.createLayout();
+
+		this.circle = this.svg.append("g")
 			.attr(
 				"transform",
 				"translate(" + this.width / 2 + "," + this.height / 2 + ")"
 			);
 
-		// Create base path element
-		g.selectAll("path")
-			.data(arcs)
+		// Build arcs
+		this.pie = d3.pie();
+
+		this.arc = d3.arc().innerRadius(0).outerRadius(this.radius);
+
+		// Build arc label
+		this.arcLabel = d3.arc()
+		.innerRadius(this.labelRadius)
+		.outerRadius(this.labelRadius);
+	}
+
+	createGraphics() {
+		let _this = this;
+
+		// Aggregate data elements
+		let counts = counter(this.data);
+		let categories = Object.keys(counts);
+		let values = Object.values(counts);
+
+		// Add new arcs
+		this.circle.datum(values)
+			.selectAll("path")
+			.data(this.pie)
 			.enter()
-				.append("path")
-				.attr("fill", (d, i) => this.scaleColor(i))
-				.attr("d", arc);
+			.append("path")
+			.attr("fill", (d, i) => this.scaleColor(i))
+			.attr("d", this.arc)
+			.each((d) => { this._newAngle = d; });
+
+		// Update existing arcs
+		this.circle.datum(values)
+			.selectAll("path")
+			.data(this.pie)
+			.transition()
+			.duration(950)
+			.attrTween("d", (d) => {
+				let interpolate = d3.interpolate(this._newAngle, d);
+				this._newAngle = interpolate(0);
+				return (t) => {
+					return _this.arc(interpolate(t));
+				};
+			});
+
+		// Remove unused paths
+		this.circle.datum(values)
+			.selectAll("path")
+			.data(this.pie)
+			.exit().remove();
+
+		// Remove any exisintg labels
+		this.circle.selectAll("text.label").remove();
 
 		// Set text element for labels
-		let text = g.selectAll("text")
-			.data(arcs)
-			.enter()
-				.append("text")
-				.attr("class", "label")
-				.attr(
-					"transform",
-					(d, i) => "translate(" + arcLabel.centroid(d) + ")"
-				);
-
-		// Different separations if labels are on one
-		// of the two sides of a pie chart
-		function labelXSeparation(element) {
-			return (element.startAngle > Math.PI ? -1 : -2.5) + "em";
-		}
-
-		// Only append label if there's enough space
-		function showLabel(element, angle) {
-			return element.endAngle - element.startAngle > angle;
-		}
+		this.circle.datum(values)
+		.selectAll("text")
+		.data(this.pie)
+		.enter()
+			.append("text")
+			.attr("class", "label")
+			.attr(
+				"transform",
+				(d, i) => {
+					return "translate(" + _this.arcLabel.centroid(d) + ")";
+				}
+			);
 
 		// Label for the percentage
 		let sum = d3.sum(values);
-		text.filter(d => showLabel(d, 0.15))
+		this.circle.datum(values)
+			.selectAll("text")
+			.data(this.pie)
+			.filter(d => this.showLabel(d, 0.15))
 			.append("tspan")
-			.attr("x", labelXSeparation)
+			.attr("x", this.labelXSeparation)
 			.attr("y", 0)
 			.attr("class", "values")
 			.text(d => (d.value / sum * 100).toFixed(2) + "%");
 
 		// Label for the category
-		text.filter(d => showLabel(d, 0.25))
+		this.circle.datum(values)
+			.selectAll("text")
+			.data(this.pie)
+			.filter(d => this.showLabel(d, 0.25))
 			.append("tspan")
-			.attr("x", labelXSeparation)
+			.attr("x", this.labelXSeparation)
 			.attr("y", "1em")
 			.text((d, i) => categories[i]);
 	}
@@ -198,25 +268,8 @@ class BarChart extends Chart {
 		this.mustRotateLabels = rotate;
 	}
 
-	show() {
-		this.width -= (this.margin.left + this.margin.right),
-		this.height -= (this.margin.top + this.margin.bottom);
-
-		this.createLayout();
-		this.createGraphics();
-	}
-
 	createLayout() {
-		// Create SVG element as container
-		this.svg = this.selection
-			.append("svg")
-			.attr("width", this.width + this.margin.left + this.margin.right)
-			.attr("height", this.height + this.margin.top + this.margin.bottom)
-			.append("g")
-				.attr(
-					"transform",
-					"translate(" + this.margin.left + "," + this.margin.top + ")"
-				);
+		super.createLayout();
 
 		this.createAxes();
 		this.appendAxes();
@@ -381,10 +434,5 @@ class BarChart extends Chart {
 			.attr("x", 0)
 			.attr("y", this.height / 2)
 			.text(this.yLabel);
-	}
-
-	update(filtered_data) {
-		this.data = filtered_data;
-		this.createGraphics();
 	}
 }
