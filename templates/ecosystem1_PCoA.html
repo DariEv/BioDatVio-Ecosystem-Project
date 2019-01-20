@@ -50,7 +50,7 @@
 		</div>
 		<script>
 			var dataset = {{ data | safe }};
-			var filter = pcoa_filter_object(dataset);
+			var filter = filter_object(dataset,true);
 			console.log("html", dataset);
 
 			window.onload = function() {

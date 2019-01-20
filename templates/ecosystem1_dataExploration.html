@@ -67,7 +67,7 @@
 		</div>
 		<script>
 			var dataset = {{ data | safe }};
-			var filter = filter_object(dataset);
+			var filter = filter_object(dataset,false);
 			console.log('Data exploration is running.');
 			console.log(dataset);
 
@@ -108,19 +108,6 @@
 				});
 */
 			};
-
-			//EXAMPLE CODE FOR FILTERED VALUES - For testing only
-			/* window.onload = function() {
-				var filter = filter_object(dataset);
-
-				var filtered_data = filter_wrapper(filter,"Data")
-
-				console.log(filtered_data)
-				myPlot = heatmapChart();
-				myPlot.init(filtered_data);
-			}
-			*/
-
 
 		</script>
 
