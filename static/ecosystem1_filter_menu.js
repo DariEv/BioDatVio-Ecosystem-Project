@@ -15,10 +15,9 @@ $( document ).ready(function() {
         
           $("#meta").addClass("active")
         
-    } else {
+    } else if (window.location.href == "http://127.0.0.1:5000/PCoA"){
         
           $("#pcoa").addClass("active")
-        
     }
     
     //filter
