@@ -50,7 +50,7 @@ function heatmapChart() {
 
 	//heatmap initialisation function
 	returnDictionary["init"] = function(data,metadata_labels){
-		
+
 			//getting taxas
 			taxa = Object.keys(data[0]);
 			taxa.shift();
@@ -142,7 +142,7 @@ function heatmapChart() {
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) - 40 + "px")
 						.select("#value")
-						.text("Sample: "+d[""]+"; Taxa: "+item + "; Abundance: "+ d[item]);
+						.text("Sample: "+d[""]+"; Taxa: "+item + "; Abundance: "+ Math.round(+d[item] * 100) / 100);
 						//Show the tooltip
 						d3.select("#tooltip").classed("hidden", false);
 
@@ -236,7 +236,7 @@ function heatmapChart() {
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) - 40 + "px")
 						.select("#value")
-						.text("Sample: "+d[""]+"; Taxa: "+item + "; Abundance: "+ d[item]);
+						.text("Sample: "+d[""]+"; Taxa: "+item + "; Abundance: "+ Math.round(+d[item] * 100) / 100);
 						//Show the tooltip
 						d3.select("#tooltip").classed("hidden", false);
 
