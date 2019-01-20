@@ -224,7 +224,6 @@ class PieChart extends Chart {
 			.data(this.pie)
 			.enter()
 			.append("path")
-			.attr("fill", (d, i) => _this.scaleColor[_this.categories[i]])
 			.attr("d", this.arc)
 			.each((d) => this._newAngle = d)
 			.on("mouseover", (d, i) => {
@@ -250,6 +249,7 @@ class PieChart extends Chart {
 			.data(this.pie)
 			.transition()
 			.duration(950)
+			.attr("fill", (d, i) => _this.scaleColor[_this.categories[i]])
 			.attrTween("d", (d) => {
 				let interpolate = d3.interpolate(this._newAngle, d);
 				this._newAngle = interpolate(0);
