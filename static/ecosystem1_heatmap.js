@@ -149,7 +149,7 @@ function heatmapChart() {
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) - 40 + "px")
 						.select("#value")
-						.text("Sample: "+i+"; Taxa: "+item);
+						.text("Sample: "+(i+1)+"; Taxa: "+item);
 						//Show the tooltip
 						d3.select("#tooltip").classed("hidden", false);
 
