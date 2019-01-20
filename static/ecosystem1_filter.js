@@ -1,5 +1,11 @@
 /* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
 
+
+/*
+HELPER FUNCTIONS
+*/
+
+
 function generate_bool_array(html_string){
   var split_string = html_string.split(";")
   var bool_array = Array(1000).fill(false)
@@ -39,6 +45,16 @@ function filter_from_object(obj, bool_array){
   //console.log(out_obj)
   return out_obj
 }
+
+function sort_by(sort_criterion){
+  return function(x,y){
+    return (x[sort_criterion] < y[sort_criterion]) ? -1 : (x[sort_criterion] > y[sort_criterion]) ? 1 : 0;
+  }
+}
+
+/*
+WRAPPER FUNCTION
+*/
 
 function filter_wrapper(filter_obj,meta_switch){
   var age_from_val = +document.getElementById("FROM").value;
@@ -92,11 +108,10 @@ function filter_wrapper(filter_obj,meta_switch){
   }
 
 }
-function sort_by(sort_criterion){
-  return function(x,y){
-    return (x[sort_criterion] < y[sort_criterion]) ? -1 : (x[sort_criterion] > y[sort_criterion]) ? 1 : 0;
-  }
-}
+
+/*
+OBJECT FUNCTION
+*/
 
 function filter_object(data,pcoa_switch){
   var returnDictionary = {};
