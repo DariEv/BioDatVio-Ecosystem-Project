@@ -50,12 +50,17 @@
 		</div>
 		<script>
 			var dataset = {{ data | safe }};
+			//filter initialisation
 			var filter = filter_object(dataset,true);
+
 			console.log("html", dataset);
 
 			window.onload = function() {
+				//PCoA plot initialisation
 				myPlot = plotPCoA();
 				myPlot.init(dataset);
+
+				//Filter button event listeners
 				document.querySelector('#BMI').addEventListener('click', function(){
 					console.log(filter_wrapper(filter,"Data"))
 					myPlot.update(filter_wrapper(filter,"Data"));
