@@ -22,7 +22,7 @@ var buckets = 6;
 //Oders the Taxa given column filter input
 function orderTaxa(keys,help_array){
 	var new_array=[];
-	var col_val=document.getElementById("COLS").value.split(";");
+	var col_val=document.getElementById("COLS").value.replace(" ","").split(";");
 
 	if (col_val == "all"){
       return keys;
