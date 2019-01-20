@@ -8,6 +8,7 @@ var samplesLabel=NaN;
 var taxaLabels=NaN;
 var taxa=NaN;
 var col_taxa=NaN;
+var pos_taxa=NaN;
 var margin={ top: 350, right: 0, bottom: 100, left: 100 };
 var width=NaN;
 var height=NaN;
@@ -18,6 +19,28 @@ var legendElementWidth=100; //todo: update for different data, depending on buck
 var legendElementHeights=20;
 var buckets = 6;
 
+function orderTaxa(keys,help_array){
+	var new_array=[];
+	var col_val=document.getElementById("COLS").value.split(";");
+
+	col_val.forEach(function(elem){
+    if (elem === "all"){
+      return keys;
+    }
+    else if (elem.indexOf('-') > -1)
+      {
+        var range = elem.split("-")
+        for(var i = +range[0]; i <= +range[1]; i++){
+          new_array.push(help_array[i]);
+        }
+      }
+    else {
+      new_array.push(help_array[elem]);
+    }
+  })
+
+	return new_array;
+}
 
 function heatmapChart() {
 	returnDictionary = {};
@@ -29,6 +52,14 @@ function heatmapChart() {
 			taxa.forEach(function(taxa, i){
 				col_taxa[taxa]=i+1;
 			});
+
+			pos_taxa={};
+			taxa.forEach(function(taxa, i){
+				i=i+1;
+				pos_taxa[i]=taxa;
+			});
+			console.log("pos_taxa:");
+			console.log(pos_taxa);
 			/*console.log(data);
 			console.log(data[0]);
 			console.log(taxa);
@@ -143,6 +174,7 @@ function heatmapChart() {
 
 			taxa = Object.keys(filtered_data[0]);
 			taxa.shift();
+			taxa=orderTaxa(taxa, pos_taxa);
 
 			taxaLabels = svg.selectAll(".taxaLabels")
 				  .data(taxa)
