@@ -67,15 +67,15 @@ function heatmapChart() {
 			});
 			
 			//constant initialisation
-			width = 2000 - margin.left - margin.right,
-			height = 13*data.length - margin.top - margin.bottom,
-			gridSize = Math.floor(height / (data.length)),
+			width = 2000 - margin.left - margin.right;
+			height = 13*data.length - margin.top - margin.bottom;
+			gridSize = Math.floor(height / (data.length));
 			colors = ["#ffffcc", "#c7e9b4", "#7fcdbb", "#41b6c4", "#2c7fb8", "#253494"]; //by colorbrewer: YlGnBu[6]
 
 			//svg creation
 			svg = d3.select("#chart").append("svg")
-			  .attr("width", width + margin.left + margin.right)
-			  .attr("height", height + margin.top + margin.bottom)
+			  .attr("width", width)
+			  .attr("height", height)
 			  .append("g")
 			  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -138,6 +138,15 @@ function heatmapChart() {
 
 	//update function when filter is selected
 	returnDictionary['update']=function(filtered_data){
+			
+			//new svg creation
+			d3.select("svg").remove();
+			svg = d3.select("#chart").append("svg")
+			  .attr("width", width)
+			  .attr("height", 13*filtered_data.length + margin.top)
+			  .append("g")
+			  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			  
 
 			//removes heatmap
 			d3.selectAll(".bordered").remove();
@@ -198,6 +207,8 @@ function heatmapChart() {
 						d3.select("#tooltip").classed("hidden", true);
 					});
 			});
+			
+			plotLegend(svg, colors, height);
 	};
     return returnDictionary;
 };
