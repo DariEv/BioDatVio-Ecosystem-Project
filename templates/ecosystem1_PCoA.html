@@ -7,9 +7,9 @@
 
 		<script src="http://d3js.org/d3.v4.min.js" charset="utf-8">
 		</script>
-		
+
 		<style>
-	  
+
 		  #tooltip {
 			position: absolute;
 			width: 200px;
@@ -50,9 +50,9 @@
 		</div>
 		<script>
 			var dataset = {{ data | safe }};
-			var filter = filter_object(dataset);
+			var filter = pcoa_filter_object(dataset);
 			console.log("html", dataset);
-			
+
 			window.onload = function() {
 				myPlot = plotPCoA();
 				myPlot.init(dataset);
