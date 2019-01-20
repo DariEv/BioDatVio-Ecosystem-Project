@@ -106,6 +106,7 @@ function heatmapChart() {
 				.style("text-anchor", "end")
 				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
 
+			console.log("ddddd", data);
 			//drawing heatmap rectangles
 			taxa.forEach(function(item, taxon) {
 				cards.enter().append("rect")
@@ -117,18 +118,12 @@ function heatmapChart() {
 					.style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item])));
 												return colors[c];})
 					.on("mouseover", function(d, i){
-
-						//highlight text
-						d3.select(this).classed("cell-hover",true);
-						d3.selectAll(".samplesLabel").classed("text-highlight",function(r,ri){ return ri==(d.row-1);});
-						d3.selectAll(".taxaLabels").classed("text-highlight",function(c,ci){ return ci==(d.col-1);});
-
 						//Update the tooltip position and value
 						d3.select("#tooltip")
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) - 40 + "px")
 						.select("#value")
-						.text("Sample: "+(i+1)+"; Taxa: "+item);
+						.text("Sample: "+d[""]+"; Taxa: "+item);
 						//Show the tooltip
 						d3.select("#tooltip").classed("hidden", false);
 
@@ -188,19 +183,13 @@ function heatmapChart() {
 				  .attr("height", gridSize)
 				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item])));
 												return colors[c];})
-				  .on("mouseover", function(d, i){
-
-						//highlight text
-						d3.select(this).classed("cell-hover",true);
-						d3.selectAll(".samplesLabel").classed("text-highlight",function(r,ri){ return ri==(d.row-1);});
-						d3.selectAll(".taxaLabels").classed("text-highlight",function(c,ci){ return ci==(d.col-1);});
-
+				  .on("mouseover", function(d, i){		
 						//Update the tooltip position and value
 						d3.select("#tooltip")
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) - 40 + "px")
 						.select("#value")
-						.text("Sample: "+i+"; Taxa: "+item);
+						.text("Sample: "+d[""]+"; Taxa: "+item);
 						//Show the tooltip
 						d3.select("#tooltip").classed("hidden", false);
 
@@ -224,7 +213,7 @@ function plotLegend(svg, colors, height){
 		.enter().append("g")
 		.attr("class", "legend");
 
-	var r= legend.append("rect")
+	var r = legend.append("rect")
 		.attr("x", function(d, i) { return legendElementWidth * i; })
 		.attr("y", -margin.top + (legendElementWidth)/3)
 		.attr("width", legendElementWidth)
