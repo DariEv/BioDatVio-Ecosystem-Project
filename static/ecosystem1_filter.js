@@ -244,7 +244,7 @@ function filter_object(data,pcoa_switch){
     var sample_ids = sample_ids;
     var data_internal = data["dataExploration"];
     var out_array = []
-  
+
 
     sample_ids.forEach(function(elem){
       for(var i = 0; i < data_internal.length; i++){
@@ -262,8 +262,17 @@ function filter_object(data,pcoa_switch){
   // returns the metadataOverview dataset filtered for the sampleIds
   returnDictionary["filter_metadata"] = function(sample_ids){
     var sample_ids = sample_ids;
-    var out_array = data["metadataOverview"];
-    out_array = out_array.filter(row => sample_ids.includes(row["SampleID"]))
+    var metadata_internal = data["metadataOverview"];
+    var out_array = []
+    //out_array = out_array.filter(row => sample_ids.includes(row["SampleID"]))
+    sample_ids.forEach(function(elem){
+      for(var i = 0; i < metadata_internal.length; i++){
+        if(metadata_internal[i]["SampleID"] === elem){
+          out_array.push(metadata_internal[i])
+          break;
+        }
+      }
+    })
 
     return out_array
     }
