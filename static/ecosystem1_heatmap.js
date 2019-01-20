@@ -15,10 +15,11 @@ var height=NaN;
 var gridSize=NaN;
 var colors=NaN;
 
-var legendElementWidth=100; //todo: update for different data, depending on buckets number?
+var legendElementWidth=100; 
 var legendElementHeights=20;
 var buckets = 6;
 
+//Oders the Taxa given column filter input
 function orderTaxa(keys,help_array){
 	var new_array=[];
 	var col_val=document.getElementById("COLS").value.split(";");
@@ -43,12 +44,17 @@ function orderTaxa(keys,help_array){
 	return new_array;
 }
 
+//creates a heatmap object
 function heatmapChart() {
 	returnDictionary = {};
+
+	//heatmap initialisation function
 	returnDictionary["init"] = function(data){
+			//getting taxas
 			taxa = Object.keys(data[0]);
 			taxa.shift();
 
+			//memorizing taxa positions for filtering
 			col_taxa={};
 			taxa.forEach(function(taxa, i){
 				col_taxa[taxa]=i+1;
@@ -59,49 +65,21 @@ function heatmapChart() {
 				i=i+1;
 				pos_taxa[i]=taxa;
 			});
-			console.log("pos_taxa:");
-			console.log(pos_taxa);
-			/*console.log(data);
-			console.log(data[0]);
-			console.log(taxa);
-			console.log("length", taxa.length);
-
-			/*
-			var samples = new Array(data.length); // create an empty array
-			for(var i = 0; i < samples.length; i++){
-				samples[i] = + i;
-			}
-			console.log(samples);
-			var max_of_array = Math.max.apply(Math, data);
-			console.log('max', max_of_array);
-			*/
-
-			//Here were the constants
-			//margin = { top: 350, right: 0, bottom: 100, left: 100 },
+			
+			//constant initialisation
 			width = 2000 - margin.left - margin.right,
 			height = 13*data.length - margin.top - margin.bottom,
 			gridSize = Math.floor(height / (data.length)),
-			//legendElementWidth = gridSize*2,
-			//buckets = 9,
 			colors = ["#ffffcc", "#c7e9b4", "#7fcdbb", "#41b6c4", "#2c7fb8", "#253494"]; //by colorbrewer: YlGnBu[6]
 
+			//svg creation
 			svg = d3.select("#chart").append("svg")
 			  .attr("width", width + margin.left + margin.right)
 			  .attr("height", height + margin.top + margin.bottom)
 			  .append("g")
 			  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			/*
-			samplesLabel = svg.selectAll(".samplesLabel")
-			  .data(samples)
-			  .enter().append("text")
-				.text(function (d) { return d; })
-				.attr("x", 0)
-				.attr("y", function (d, i) { return i * gridSize; })
-				.style("text-anchor", "end")
-				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
-			*/
-
+			//creating taxa labels
 			var taxaLabels = svg.selectAll(".taxaLabels")
 				  .data(taxa)
 				  .enter().append("text")
@@ -112,12 +90,13 @@ function heatmapChart() {
 					.style("text-anchor", "start")
 					.attr("transform", "translate(8, -8) rotate(-90)");
 
-
+			//creating heatmap
 			cards = svg.selectAll(".sample")
 				.data(data);
 
 			cards.append("title");
 
+			//drawing sample labels
 			cards.enter().append("text")
 				.text(function (d) { return d[""]; })
 				.attr("class", "samplesLabel")
@@ -127,6 +106,7 @@ function heatmapChart() {
 				.style("text-anchor", "end")
 				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
 
+			//drawing heatmap rectangles
 			taxa.forEach(function(item, taxon) {
 				cards.enter().append("rect")
 					.attr("x", function(d, i) { return (taxon) * gridSize; })
@@ -138,7 +118,6 @@ function heatmapChart() {
 												return colors[c];})
 					.on("mouseover", function(d, i){
 
-						//d3.select(this).style("fill", "orange");
 						//highlight text
 						d3.select(this).classed("cell-hover",true);
 						d3.selectAll(".samplesLabel").classed("text-highlight",function(r,ri){ return ri==(d.row-1);});
@@ -156,27 +135,28 @@ function heatmapChart() {
 					})
 					.on("mouseout", function(){
 						d3.select(this).classed("cell-hover",false);
-						/*d3.selectAll(".rowLabel").classed("text-highlight",false);
-						d3.selectAll(".colLabel").classed("text-highlight",false);*/
 						d3.select("#tooltip").classed("hidden", true);
 					});
 			});
 
 			plotLegend(svg, colors, height);
-
-			console.log('printed heatmap.');
-
 	}
 
+	//update function when filter is selected
 	returnDictionary['update']=function(filtered_data){
+
+			//removes heatmap
 			d3.selectAll(".bordered").remove();
 			d3.selectAll(".samplesLabel").remove();
 			d3.selectAll(".taxaLabels").remove();
 
+			//gets new taxas after filtering
 			taxa = Object.keys(filtered_data[0]);
 			taxa.shift();
+			//is ordering Taxa through column filter
 			taxa=orderTaxa(taxa, pos_taxa);
 
+			//creates new taxa labels
 			taxaLabels = svg.selectAll(".taxaLabels")
 				  .data(taxa)
 				  .enter().append("text")
@@ -187,7 +167,7 @@ function heatmapChart() {
 					.style("text-anchor", "start")
 					.attr("transform", "translate(" + gridSize / 2 + ", -6) rotate(-90)");
 
-			console.log(filtered_data);
+			//creates new heatmap
 			cards=svg.selectAll(".sample").data(filtered_data);
 
 			cards.enter().append("text")
@@ -210,7 +190,6 @@ function heatmapChart() {
 												return colors[c];})
 				  .on("mouseover", function(d, i){
 
-						//d3.select(this).style("fill", "orange");
 						//highlight text
 						d3.select(this).classed("cell-hover",true);
 						d3.selectAll(".samplesLabel").classed("text-highlight",function(r,ri){ return ri==(d.row-1);});
@@ -228,8 +207,6 @@ function heatmapChart() {
 					})
 					.on("mouseout", function(){
 						d3.select(this).classed("cell-hover",false);
-						/*d3.selectAll(".rowLabel").classed("text-highlight",false);
-						d3.selectAll(".colLabel").classed("text-highlight",false);*/
 						d3.select("#tooltip").classed("hidden", true);
 					});
 			});
@@ -237,7 +214,7 @@ function heatmapChart() {
     return returnDictionary;
 };
 
-
+//creates legend for the heatmap
 function plotLegend(svg, colors, height){
 
 	legendCells = Array.apply(null, {length: buckets}).map(Number.call, Number); // array from 0 to buckets
@@ -254,11 +231,6 @@ function plotLegend(svg, colors, height){
 		.attr("height", legendElementHeights)
 		.attr('pointer-events', 'all')
 		.style("fill", function(d, i) { return colors[i]; });
-
-	/*r.on("mouseover", function(){
-			d3.select(this)
-			  .style("fill", "orange");
-	});*/
 
 	legend.append("text")
 		.attr("class", "mono")

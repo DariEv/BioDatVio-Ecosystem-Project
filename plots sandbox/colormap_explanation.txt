@@ -1,5 +1,0 @@
-
-- Max value of relative abundance in ecosystem_HITChip.tsv is 944063.
-- Color classes log_10(relative abundance)
-- 6 color classes
-- calculate by colorbrewer: YlGnBu of 6 classes
