@@ -40,15 +40,16 @@
 /* Histogram */
 
 .histogram .bar {
-	fill: #17a2b8;
-	-webkit-transition: fill 0.1s ease-out;
-	-o-transition: fill 0.1s ease-out;
-	transition: fill 0.1s ease-out;
+	-webkit-transition: -webkit-filter 0.1s ease-out;
+	transition: -webkit-filter 0.1s ease-out;
+	-o-transition: filter 0.1s ease-out;
+	transition: filter 0.1s ease-out;
+	transition: filter 0.1s ease-out, -webkit-filter 0.1s ease-out;
 }
 
 .histogram .bar:hover {
-	fill: #fc8d62;
-	opacity: 0.9;
+	-webkit-filter: saturate(150%);
+	filter: saturate(150%);
 }
 
 .histogram .label {
@@ -84,15 +85,12 @@
 
 .pie path {
 	stroke: #eee;
-	-webkit-transition: opacity 0.3s, -webkit-transform 0.2s ease-in-out;
-	transition: opacity 0.3s, -webkit-transform 0.2s ease-in-out;
-	-o-transition: transform 0.2s ease-in-out, opacity 0.3s;
-	transition: transform 0.2s ease-in-out, opacity 0.3s;
-	transition: transform 0.2s ease-in-out, opacity 0.3s, -webkit-transform 0.2s ease-in-out;
+	transition: transform 0.2s ease-in-out, filter 0.3s;
 }
 
 .pie path:hover {
-	opacity: 0.9;
+	-webkit-filter: saturate(140%);
+	filter: saturate(140%);
 	-webkit-transform: scale(1.03);
 	-ms-transform: scale(1.03);
 	transform: scale(1.03);

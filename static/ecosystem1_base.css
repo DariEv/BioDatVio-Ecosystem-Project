@@ -1,12 +1,13 @@
 /* Project ecosystem 1 by Daria Evseeva, Eduardo Vela, Nicolas Brich, Sarah Ertel, Constantin Holzapfel 21.1.19 */
 
+/* Navigation Hover */
 li:hover {
   background-color: lightgray;
   color: white;
 }
 
+/* Navigation Active */
 .active {
-    
   background-color: lightgray;
   color: white;
 }
@@ -21,13 +22,13 @@ a {
 }
 
 body { 
-    background-color: lightgray;
+    background-color: #efefef;;
     padding-top: 70px; }
 
 #filter {
   background-color:darkslategray; 
   color: white;
-  position: -webkit-sticky; /* Safari */
+  position: -webkit-sticky;
   position: sticky;
   top: 50px;
 }

@@ -2,7 +2,7 @@
 
 $( document ).ready(function() {
 
-
+/* checks what page is active and sets the menu item accordingly  */
     if (window.location.href == "http://127.0.0.1:5000/project") {
 
         $("#proj").addClass("active")
@@ -20,7 +20,7 @@ $( document ).ready(function() {
           $("#pcoa").addClass("active")
     }
 
-    //filter
+/* Filter */
     $(".dropdown-menu li a").on('click', function() {
 		$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
 		$(this).parents(".dropdown").find('.btn').val($(this).attr('value'));
@@ -37,7 +37,8 @@ $( document ).ready(function() {
 		}
 		else{alert("Out of range! Stay above 0.")}
 	});
-
+    
+/* selection of menu item  */
   $("a").on("click", function(){
   $($(this).parent().parent()).find('.active').removeClass('active');
   $(this).parent().addClass("active");
