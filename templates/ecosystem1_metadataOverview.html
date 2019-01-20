@@ -11,7 +11,7 @@
 	<script>
 		$(document).ready(function() {
 			let dataset = {{ data | safe }};
-			let filter = filter_object(dataset);
+			let filter = filter_object(dataset,false);
 			let chartsWidth = 380;
 			let chartsHeight = chartsWidth;
 
