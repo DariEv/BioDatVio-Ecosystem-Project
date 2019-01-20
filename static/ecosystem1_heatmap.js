@@ -50,7 +50,7 @@ function heatmapChart() {
 
 	//heatmap initialisation function
 	returnDictionary["init"] = function(data,metadata_labels){
-		console.log(data["metadataOverview"])
+		
 			//getting taxas
 			taxa = Object.keys(data[0]);
 			taxa.shift();
