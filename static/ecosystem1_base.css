@@ -20,7 +20,9 @@ a {
     overflow: auto;
 }
 
-body { padding-top: 70px; }
+body { 
+    background-color: lightgray;
+    padding-top: 70px; }
 
 #filter {
 

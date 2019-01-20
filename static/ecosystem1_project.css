@@ -30,4 +30,6 @@ h1 div{
 	font-size: 35%;
 }
 
-body { padding-top: 70px; }
+body { 
+    background-color: lightgray;
+    padding-top: 70px; }
