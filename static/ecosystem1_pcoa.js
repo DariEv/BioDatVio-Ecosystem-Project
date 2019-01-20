@@ -49,6 +49,8 @@ function plotPCoA(){
 	
 	returnDictionary['update']=function(filtered_data){		
 		console.log("PCoA filtred", filtered_data)
+		d3.select("svg").remove();
+		plotFromData(filtered_data, document.getElementById("btn_sortby").value);
 	};
 	
 	returnDictionary['updateColors']=function(data, colorKey){
