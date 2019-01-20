@@ -50,6 +50,32 @@ function counter(array) {
 }
 
 
+// Update function
+// This function will be redefined after window loading
+let filterCharts = function() {}
+
+// Filtering using chart elements
+let performFilter = function() {
+	let $this = $(this);
+	let $parent = $this.closest(".pie");
+	let new_value = $(this).data("value");
+
+	// Update attribute
+	let buttonID = null;
+	if ($parent.hasClass("sex")) {
+		buttonID = "#btn_sex";
+	} else if ($parent.hasClass("bmi")) {
+		buttonID = "#btn_bmi";
+	}
+
+	// Change displayed text
+	$(buttonID).attr("value", new_value)
+	$(buttonID).html(new_value + " <span class='caret'></span>");
+
+	filterCharts();
+}
+
+
 // Base implementation of a Chart
 class Chart {
 
@@ -241,7 +267,8 @@ class PieChart extends Chart {
 			})
 			.on("mouseout", (d) => {
 				this.tooltip.classed("visible", false);
-			});
+			})
+			.on("click", performFilter);
 
 		// Update existing arcs
 		this.circle.datum(this.values)
@@ -250,6 +277,7 @@ class PieChart extends Chart {
 			.transition()
 			.duration(950)
 			.attr("fill", (d, i) => _this.scaleColor[_this.categories[i]])
+			.attr("data-value", (d, i) => _this.categories[i])
 			.attrTween("d", (d) => {
 				let interpolate = d3.interpolate(this._newAngle, d);
 				this._newAngle = interpolate(0);
