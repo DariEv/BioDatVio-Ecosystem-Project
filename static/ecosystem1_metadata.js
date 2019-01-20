@@ -155,7 +155,7 @@ class PieChart extends Chart {
 			);
 
 		// Build arcs
-		this.pie = d3.pie().sort(null);
+		this.pie = d3.pie().value((d) => d);
 
 		this.arc = d3.arc().innerRadius(0).outerRadius(this.radius);
 
@@ -170,28 +170,29 @@ class PieChart extends Chart {
 
 		// Aggregate data elements
 		let counts = counter(this.data);
-		let categories = Object.keys(counts);
-		let values = Object.values(counts);
+		this.categories = Object.keys(counts)
+			.sort((a, b) => counts[b] - counts[a]);
+		this.values = Object.values(counts).sort((a, b) => b - a);
 
 		// Remove unused paths
-		this.circle.datum(values)
+		this.circle.datum(this.values)
 			.selectAll("path")
 			.data(this.pie)
 			.exit().remove();
 
 		// Add new arcs
-		this.circle.datum(values)
+		this.circle.datum(this.values)
 			.selectAll("path")
 			.data(this.pie)
 			.enter()
 			.append("path")
 			.attr("fill", (d, i) => this.scaleColor(i))
 			.attr("d", this.arc)
-			.each((d) => { this._newAngle = d; })
+			.each((d) => this._newAngle = d)
 			.on("mouseover", (d, i) => {
 				this.tooltip.html(
 					"<p><span id='value'>" +
-					categories[i] + ": #" + d.data + " entries" +
+					_this.categories[i] + ": #" + d.data + " entries" +
 					"</p>"
 				);
 				this.tooltip.classed("visible", true);
@@ -206,7 +207,7 @@ class PieChart extends Chart {
 			});
 
 		// Update existing arcs
-		this.circle.datum(values)
+		this.circle.datum(this.values)
 			.selectAll("path")
 			.data(this.pie)
 			.transition()
@@ -223,7 +224,7 @@ class PieChart extends Chart {
 		this.circle.selectAll("text.label").remove();
 
 		// Set text element for labels
-		this.circle.datum(values)
+		this.circle.datum(this.values)
 		.selectAll("text")
 		.data(this.pie)
 		.enter()
@@ -231,14 +232,12 @@ class PieChart extends Chart {
 			.attr("class", "label")
 			.attr(
 				"transform",
-				(d, i) => {
-					return "translate(" + _this.arcLabel.centroid(d) + ")";
-				}
+				(d) => "translate(" + _this.arcLabel.centroid(d) + ")"
 			);
 
 		// Label for the percentage
-		let sum = d3.sum(values);
-		this.circle.datum(values)
+		let sum = d3.sum(this.values);
+		this.circle.datum(this.values)
 			.selectAll("text")
 			.data(this.pie)
 			.filter(d => this.showLabel(d, 0.15))
@@ -249,14 +248,14 @@ class PieChart extends Chart {
 			.text(d => (d.value / sum * 100).toFixed(2) + "%");
 
 		// Label for the category
-		this.circle.datum(values)
+		this.circle.datum(this.values)
 			.selectAll("text")
 			.data(this.pie)
 			.filter(d => this.showLabel(d, 0.25))
 			.append("tspan")
 			.attr("x", this.labelXSeparation)
 			.attr("y", "1em")
-			.text((d, i) => categories[i]);
+			.text((d, i) => _this.categories[i]);
 	}
 }
 
