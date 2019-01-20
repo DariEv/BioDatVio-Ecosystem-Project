@@ -15,7 +15,7 @@ var height=NaN;
 var gridSize=NaN;
 var colors=NaN;
 
-var legendElementWidth=100; 
+var legendElementWidth=100;
 var legendElementHeights=20;
 var buckets = 6;
 
@@ -49,7 +49,8 @@ function heatmapChart() {
 	returnDictionary = {};
 
 	//heatmap initialisation function
-	returnDictionary["init"] = function(data){
+	returnDictionary["init"] = function(data,metadata_labels){
+		console.log(data["metadataOverview"])
 			//getting taxas
 			taxa = Object.keys(data[0]);
 			taxa.shift();
@@ -65,7 +66,7 @@ function heatmapChart() {
 				i=i+1;
 				pos_taxa[i]=taxa;
 			});
-			
+
 			//constant initialisation
 			width = 2000 - margin.left - margin.right;
 			height = 13*data.length - margin.top - margin.bottom;
@@ -84,7 +85,7 @@ function heatmapChart() {
 				  .data(taxa)
 				  .enter().append("text")
 				  	.attr("class","taxaLabels")
-					.text(function(d,i) { return col_taxa[d]+": "+ d; })					
+					.text(function(d,i) { return col_taxa[d]+": "+ d; })
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
@@ -104,7 +105,26 @@ function heatmapChart() {
 				.attr("y", function (d, i) { return i * gridSize; })
 				.attr('pointer-events', 'all')
 				.style("text-anchor", "end")
-				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
+				.attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+				.on("mouseover", function(d, i){
+					//Update the tooltip position and value
+					d3.select("#tooltip")
+					.style("left", (d3.event.pageX) + "px")
+					.style("top", (d3.event.pageY) - 60 + "px")
+					.select("#value")
+					.text("Sample: "+metadata_labels[i].SampleID+
+						"; Age: "+metadata_labels[i].Age+
+						"; Sex: "+metadata_labels[i].Sex+
+						"; Nationality: "+metadata_labels[i].Nationality+
+						"; BMI_group: "+metadata_labels[i].BMI_group);
+					//Show the tooltip
+					d3.select("#tooltip").classed("hidden", false);
+				})
+				.on("mouseout", function(){
+					// hide tooltip
+					d3.select("#tooltip").classed("hidden", true);
+				})
+				;
 
 			//drawing heatmap rectangles
 			taxa.forEach(function(item, taxon) {
@@ -137,8 +157,8 @@ function heatmapChart() {
 	}
 
 	//update function when filter is selected
-	returnDictionary['update']=function(filtered_data){
-			
+	returnDictionary['update']=function(filtered_data,filtered_meta_data){
+
 			//new svg creation
 			d3.select("svg").remove();
 			svg = d3.select("#chart").append("svg")
@@ -146,7 +166,7 @@ function heatmapChart() {
 			  .attr("height", 13*filtered_data.length + margin.top)
 			  .append("g")
 			  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-			  
+
 
 			//removes heatmap
 			d3.selectAll(".bordered").remove();
@@ -179,7 +199,26 @@ function heatmapChart() {
 				.attr("x", 0)
 				.attr("y", function (d, i) { return i * gridSize; })
 				.style("text-anchor", "end")
-				.attr("transform", "translate(-6," + gridSize / 1.5 + ")");
+				.attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+				.on("mouseover", function(d, i){
+					//Update the tooltip position and value
+					d3.select("#tooltip")
+					.style("left", (d3.event.pageX) + "px")
+					.style("top", (d3.event.pageY) - 60 + "px")
+					.select("#value")
+					.text("Sample: "+filtered_meta_data[i].SampleID+
+						"; Age: "+filtered_meta_data[i].Age+
+						"; Sex: "+filtered_meta_data[i].Sex+
+						"; Nationality: "+filtered_meta_data[i].Nationality+
+						"; BMI_group: "+filtered_meta_data[i].BMI_group);
+					//Show the tooltip
+					d3.select("#tooltip").classed("hidden", false);
+				})
+				.on("mouseout", function(){
+					// hide tooltip
+					d3.select("#tooltip").classed("hidden", true);
+				})
+				;
 
 			taxa.forEach(function(item, taxon) {
 
@@ -191,7 +230,7 @@ function heatmapChart() {
 				  .attr("height", gridSize)
 				  .style("fill", function(d) {c = Math.floor(Math.log10(Number(d[item])));
 												return colors[c];})
-				  .on("mouseover", function(d, i){		
+				  .on("mouseover", function(d, i){
 						//Update the tooltip position and value
 						d3.select("#tooltip")
 						.style("left", (d3.event.pageX) + "px")
@@ -207,7 +246,7 @@ function heatmapChart() {
 						d3.select("#tooltip").classed("hidden", true);
 					});
 			});
-			
+
 			plotLegend(svg, colors, height);
 	};
     return returnDictionary;
