@@ -31,8 +31,8 @@
 			ageChart.selectionElement = d3.select(".age").datum(ageColumn);
 			ageChart.chartWidth = 400;
 			ageChart.chartHeight = 420;
-			ageChart.yAxisLabel = "Frequencies";
-			ageChart.xAxisLabel = "Age";
+			ageChart.yAxisLabel = "Frequencies [number of entries]";
+			ageChart.xAxisLabel = "Age [years]";
 			ageChart.colorFor = "Age";
 			ageChart.show();
 
@@ -49,7 +49,7 @@
 			nationChart.selectionElement = d3.select(".nationality").datum(nationColumn);
 			nationChart.chartWidth = 400;
 			nationChart.chartHeight = 400;
-			nationChart.yAxisLabel = "Frequencies"
+			nationChart.yAxisLabel = "Frequencies [number of entries]"
 			nationChart.xAxisLabel = "Nationalities";
 			nationChart.sortData = true;
 			nationChart.rotateLabels = true;
