@@ -72,6 +72,9 @@ function plotFromData(data, colorKey){
 	var metadata = data["metadataOverview"];
 	
 	console.log("js", pcaValues["Sample-13"]);
+	console.log("meta:", metadata);
+	console.log("meta:", Object.keys(metadata));
+	console.log("meta:", Object.keys(pcaValues));
 
 	// Cast my values as numbers and determine ranges.
 	var minmax = {p1: {min:0, max:0}, p2: {min:0, max:0}}
@@ -136,7 +139,6 @@ function plotFromData(data, colorKey){
 		.style("text-anchor", "middle")
 		.text(PCsPercentage[1]); 
 	
-	console.log("ggggg", colorKey);
 	// Set-up my colours/groups.
 	if (colorKey == "")
 		colorKey = "Age";
@@ -144,12 +146,13 @@ function plotFromData(data, colorKey){
 	var colors = colorMap[colorKey];
 	
 	var groups = {};
-		metadata.forEach(function(d, i) {
-			if (colorKey == "Age")
-				groups[i] = Math.floor(d[colorKey]/10);
-			else
-				groups[i] = d[colorKey];
+	metadata.forEach(function(d, i) {
+		if (colorKey == "Age")
+			groups[i] = Math.floor(d[colorKey]/10);
+		else
+			groups[i] = d[colorKey];
 	});
+	
 	console.log("coloring", colors[groups[0]]);
 	console.log("coloring", groups);
 	
@@ -157,7 +160,6 @@ function plotFromData(data, colorKey){
 	svg.selectAll("circle")
 		.data(Object.values(pcaValues))
 		.enter().append("circle")
-		//.attr("class", "circle")
 		.attr("r", 3.5)
 		.attr("cx", function(d) { return xScale(d.p1); })
 		.attr("cy", function(d) { return yScale(d.p2); })
@@ -198,7 +200,9 @@ function plotLegend(svg, colors, type, height){
 		.enter().append("g")
 		.attr("class", "legend");
 
-	legend.append("rect")
+	legend.append("rect")	
+	.transition()
+		.duration(1000)
 		.attr("x", function(d, i) { return legendElementWidth * i; })
 		.attr("y", -margin.top + (legendElementWidth)/3)
 		.attr("width", legendElementWidth)
@@ -207,6 +211,8 @@ function plotLegend(svg, colors, type, height){
 		.style("fill", function(d, i) {console.log(colors[colorKeys[i]]); return colors[colorKeys[i]]; });
 
 	legend.append("text")
+	.transition()
+		.duration(1000)
 		.attr("class", "mono")
 		.text(function(d, i) { if (type == "Age") return "from "+(colorKeys[i]*10)+" y.o.";
 								else return colorKeys[i]; })
