@@ -24,18 +24,19 @@ function orderTaxa(keys,help_array){
 	var col_val=document.getElementById("COLS").value.split(";");
 
 	col_val.forEach(function(elem){
-    if (elem === "all"){
+    if (elem == "all"){
+    	console.log(keys);
       return keys;
     }
     else if (elem.indexOf('-') > -1)
       {
         var range = elem.split("-")
         for(var i = +range[0]; i <= +range[1]; i++){
-          new_array.push(help_array[i]);
+          if(1<=i&&i<=130){new_array.push(help_array[i]);}
         }
       }
     else {
-      new_array.push(help_array[elem]);
+      if(1<=elem&&elem<=130){new_array.push(help_array[elem]);}
     }
   })
 
