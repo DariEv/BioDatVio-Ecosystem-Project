@@ -515,8 +515,8 @@ class BarChart extends Chart {
 		// Adding Y axis label
 		this.svg.append("text")
 			.attr("class", "label y-axis")
-			.attr("x", 0)
-			.attr("y", this.height / 2)
+			.attr("x", -20)
+			.attr("y", this.height / 2 - 5)
 			.text(this.yLabel);
 	}
 }
