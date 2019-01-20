@@ -57,7 +57,7 @@ let filterCharts = function() {}
 // Filtering using chart elements
 let performFilter = function() {
 	let $this = $(this);
-	let $parent = $this.closest(".pie");
+	let $parent = $this.closest(".chart");
 	let new_value = $(this).data("value");
 
 	// Update attribute
@@ -66,6 +66,8 @@ let performFilter = function() {
 		buttonID = "#btn_sex";
 	} else if ($parent.hasClass("bmi")) {
 		buttonID = "#btn_bmi";
+	} else if ($parent.hasClass("nationality")) {
+		buttonID = "#btn_nationality";
 	}
 
 	// Change displayed text
@@ -430,6 +432,7 @@ class BarChart extends Chart {
 			.attr("height", function(d, i) { return _this.scaleBarHeight(d); })
 			.attr("y", function(d) { return _this.height - _this.scaleBarHeight(d); })
 			.attr("x", function(d, i) { return _this.xScale(_this.xLabels[i]); })
+			.attr("data-value", (d, i) => _this.xLabels[i])
 			.attr("fill", (d, i) => {
 				let value = _this.xLabels[i];
 
@@ -475,6 +478,7 @@ class BarChart extends Chart {
 			.on("mouseout", (d) => {
 				_this.tooltip.classed("visible", false);
 			})
+			.on("click", performFilter)
 			.call(drawBars);
 
 		// Update new bar position
