@@ -7,6 +7,7 @@ var cards=NaN;
 var samplesLabel=NaN;
 var taxaLabels=NaN;
 var taxa=NaN;
+var col_taxa=NaN;
 var margin={ top: 350, right: 0, bottom: 100, left: 100 };
 var width=NaN;
 var height=NaN;
@@ -23,6 +24,11 @@ function heatmapChart() {
 	returnDictionary["init"] = function(data){
 			taxa = Object.keys(data[0]);
 			taxa.shift();
+
+			col_taxa={};
+			taxa.forEach(function(taxa, i){
+				col_taxa[taxa]=i+1;
+			});
 			/*console.log(data);
 			console.log(data[0]);
 			console.log(taxa);
@@ -68,7 +74,7 @@ function heatmapChart() {
 				  .data(taxa)
 				  .enter().append("text")
 				  	.attr("class","taxaLabels")
-					.text(function(d,i) { return +i+1 +": "+ d; })					
+					.text(function(d,i) { return col_taxa[d]+": "+ d; })					
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
@@ -142,7 +148,7 @@ function heatmapChart() {
 				  .data(taxa)
 				  .enter().append("text")
 				  	.attr("class","taxaLabels")
-					.text(function(d) { return +i+1 +": "+ d; })
+					.text(function(d) { return col_taxa[d]+": "+ d; })
 					.attr("y", function(d, i) { return i * gridSize; })
 					.attr("x", 0)
 					.style("text-anchor", "start")
