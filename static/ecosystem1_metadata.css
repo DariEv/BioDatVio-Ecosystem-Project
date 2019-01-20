@@ -84,6 +84,7 @@
 }
 
 .pie path {
+	cursor: pointer;
 	stroke: #eee;
 	transition: transform 0.2s ease-in-out, filter 0.3s;
 }

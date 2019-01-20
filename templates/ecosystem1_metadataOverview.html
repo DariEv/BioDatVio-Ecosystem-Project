@@ -16,8 +16,8 @@
 			let chartsHeight = chartsWidth;
 
 			//hides buttons
-			document.getElementById("sortby_div").style.display="none";
-			document.getElementById("colfilter_div").style.display="none";
+			$("#sortby_div").css("display", "none");
+			$("#colfilter_div").css("display", "none");
 
 			// Arrange metadata values
 			let columns = groupByColumn(dataset["metadataOverview"]);
@@ -64,8 +64,8 @@
 			BMIChart.colorFor = "BMI_group";
 			BMIChart.show();
 
-			// Attach listener for data filtering
-			$("form ul, form input[type='button']").on("click", function() {
+			// Redefine the Update function
+			filterCharts = function() {
 				columns = groupByColumn(filter_wrapper(filter, "Meta"))
 
 				// Update charts
@@ -73,7 +73,10 @@
 				sexChart.update(columns["Sex"].values);
 				nationChart.update(columns["Nationality"].values);
 				BMIChart.update(columns["BMI_group"].values);
-			});
+			}
+
+			// Attach listener for data filtering
+			$("form ul, form input[type='button']").on("click", filterCharts);
 		});
 	</script>
 
